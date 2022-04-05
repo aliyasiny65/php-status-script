@@ -12,6 +12,11 @@ A PHP based Website Status Script.
 - Checking Site Status 
 - Add other Admin Account
 
+# Requirements
+- PHP 7.0 or higher (PHP 7.4 recommended)
+- MySQL/MariaDB Database. PostgreSQL not supported
+- Required PHP Extensions: Zip(Update Installation), mysqli(Database Connection), curl(Update Installation), json(Incident, Category and reports data) and hash(Password Hashing)
+
 # Roadmap
 - [x] Admin
   - [x] Incident Create & Update
