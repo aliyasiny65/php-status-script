@@ -5,7 +5,7 @@ $dbuser = $_POST['dbuser'];
 $dbpass = $_POST['dbpass'];
 $dbname = $_POST['dbname'];
 $sname = $_POST['sname'];
-$sdescription = $_POST['sdescription'];
+$sdescription = $_POST['description'];
 
 $conn = mysqli_connect($servername, $dbuser, $dbpass, $dbname);
 
@@ -119,7 +119,7 @@ if (isset($_POST['submit'])) {
 				<input type="text" placeholder="Site Name" name="sname" value="<?php echo $_POST['sname']; ?>" required>
             </div>
             <div class="input-group">
-				<input type="text" placeholder="Site Description" name="description" value="<?php echo $_POST['sdescription']; ?>" required>
+				<input type="text" placeholder="Site Description" name="description" value="<?php echo $_POST['description']; ?>" required>
             </div>
 			<div class="input-group">
 				<button name="submit" class="btn">Install</button>
