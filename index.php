@@ -114,7 +114,6 @@ if(file_exists('incidentdata.json'))
 <html lang="tr">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/x-icon" href="favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><?php echo($sname) ?> Status</title>
     <meta property="og:title" content="<?php echo($sname) ?> Status" />
@@ -663,7 +662,7 @@ if(file_exists('incidentdata.json'))
         <div class="container flex justify-between">
           <div>
             Powered by
-            <span class="font-semibold text-black dark:text-white"; onclick="window.location.href='https:/\/github.com/aliyasiny65';">Crypon Status</span>
+            <a href="https:/\/github.com/aliyasiny65"><span class="font semibold">Crypon Status</span></a>
           </div>
         </div>
       </footer>
