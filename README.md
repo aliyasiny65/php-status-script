@@ -20,7 +20,7 @@ A PHP based Website Status Script.
   - [x] Incident Create & Update
   - [ ] Incident Delete
   - [x] View Reports
-  - [ ] Report Delete
+  - [x] Report Delete
   - [x] Category Edit
   - [ ] Category Delete
   - [x] Account Edit
