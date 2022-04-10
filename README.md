@@ -9,8 +9,6 @@ A PHP based Website Status Script.
 
 # To Do List 
 - Subscribe to Status (Email...)
-- Checking Site Status 
-- Add other Admin Account
 
 # Requirements
 - PHP 7.0 or higher (PHP 7.4 recommended)
