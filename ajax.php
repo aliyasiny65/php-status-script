@@ -11,11 +11,11 @@ $findByIdinc = function($id) use ($objitemsinc) {
 
     return false;
 };
-
+/*
 $dbcek = $conn->query("SELECT email FROM `users`");
 $array = $dbcek->fetch_array();
 $siteadmin = $array["email"];
-
+*/
 $control = $findByIdinc(date("M/d/Y"));
 //echo("$control");
 $jsonitem = file_get_contents("data.json");
