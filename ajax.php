@@ -56,7 +56,7 @@ if(file_exists('incidentdata.json'))
      }
 }
 }
-
+/*
 $domain = $findById('category1');
 $domain2 = $findById('category2');
 $domain3 = $findById('category3');
@@ -177,7 +177,7 @@ function get_http_response_code3($domain3) {
       }
   
       file_put_contents('data.json', json_encode($json_arro3));
-  }
+  }*/
 ?>
 <html>
 <body>
