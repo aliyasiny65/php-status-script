@@ -7,7 +7,6 @@ if (!isset($_SESSION['email'])) {
 }
 
 include_once '../config.php';
-$result = mysqli_query($conn,"SELECT * FROM employee");
 
 ?>
 
@@ -30,7 +29,7 @@ $result = mysqli_query($conn,"SELECT * FROM employee");
             font-size: large;
             border: 1px solid black;
 			height: 150px;
-			width: 1250px;
+			width: 150px;
         }
   
         h1 {
@@ -221,18 +220,20 @@ $result = mysqli_query($conn,"SELECT * FROM employee");
 		   </div>
 		</div>
 		<h4></h4>
+		<div style="overflow-x:auto;">
         <table id='table'>
             <tr>
                 <th>Report ID</th>
                 <th>User Name</th>
                 <th>Affected Service</th>
                 <th>Information</th>
+				<th>Actions</th>
             </tr>
   
             <script>
                 $(document).ready(function () {
                     $.getJSON("../reports.json", 
-                            function (data) {
+                        function (data) {
                         var student = '';
                         $.each(data, function (key, value) {
                             student += '<tr>';
@@ -248,7 +249,8 @@ $result = mysqli_query($conn,"SELECT * FROM employee");
                             student += '<td>' + 
                                 value.info + '</td>';
 
-                            
+							student += '<td>' + '<a href="delete-report.php?id=' + value.id + '">' + 'Delete Report' + '</a>' + '</td>';
+
                             student += '</tr>';
                         });
 
@@ -256,6 +258,7 @@ $result = mysqli_query($conn,"SELECT * FROM employee");
                     });
                 });
             </script>
+			</div>
     </section>
 	<footer class="footer footer-transparent d-print-none">
           <div class="container-xl">

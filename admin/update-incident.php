@@ -17,11 +17,12 @@ $findByIdinc = function($id) use ($objitemsinc) {
     return false;
 };
 if($findByIdinc(date("M/d/Y")) == "noinc") {
+    if($findByIdinc(date('M/d/Y',strtotime("-1 days"))) == "noinc") {
     header("Location: mng-incidents.php");
+    };
 }
 
 include_once '../config.php';
-$result = mysqli_query($conn,"SELECT * FROM employee");
 //
 $jsonitem = file_get_contents("../data.json");
 
@@ -67,9 +68,13 @@ if (isset($_POST['submit'])) {
     $data = file_get_contents('../incidentdata.json');
 
     $json_arr = json_decode($data, true);
-
+    if($findByIdinc(date("M/d/Y")) == "noinc") {
+        $gunq = date("M/d/Y");
+    } else if($findByIdinc(date('M/d/Y',strtotime("-1 days"))) == "noinc") { 
+        $gunq = date('M/d/Y',strtotime("-1 days"));
+    }
     foreach ($json_arr as $key => $value) {
-        if ($value['id'] == date("M/d/Y")) {
+        if ($value['id'] == $gunq) {
             $json_arr[$key]['completed'] = $compltdinfo;
             $json_arr[$key]['completeddate'] = date('M d, h:i A', time());
         }
@@ -95,7 +100,12 @@ if (isset($_POST['submit'])) {
 	<div class="container">
 		<form action="" method="POST" class="login-email">
 			<p class="login-text" style="font-size: 2rem; font-weight: 800;">Update Incident</p>
-            <p class="login-text" style="font-size: 14px; font-weight: 800;"><?php echo(date("M/d/Y")); ?></p>
+            <p class="login-text" style="font-size: 14px; font-weight: 800;"><?php
+             if(date("M/d/Y") == "noinc") {
+                 echo date('M/d/Y',strtotime("-1 days"));
+            } else {
+                echo date('M/d/Y');
+            } ?></p>
             <p class="login-text" style="font-size: 14px; font-weight: 800;"><?php echo("Affected Services: "); echo($findById($ctg)); ?></p>
 			<div class="input-group">
 				<input type="text" placeholder="Incident Completed Information" name="completedinfo" value="<?php echo $_POST['completedinfo']; ?>" required>

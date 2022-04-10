@@ -6,7 +6,6 @@ if (!isset($_SESSION['email'])) {
 }
 
 include_once '../config.php';
-$result = mysqli_query($conn,"SELECT * FROM employee");
 $usermail = $_SESSION['email'];
 
 if (isset($_POST['submit'])) {
@@ -243,6 +242,9 @@ if (isset($_POST['submit'])) {
             </div>
           </div>
         </footer>
+		<div class="input-group">
+			<a class="btn" href="new-account.php">Add New Admin Account</a>
+		</div>
       </div>
     </div>
     <!-- Libs JS -->

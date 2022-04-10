@@ -1,7 +1,4 @@
 <?php 
-/*
-<?php echo "<h1>Hoşgeldin, " . $_SESSION['email'] . "!</h1>"; ?>
-*/
 session_start();
 
 if (!isset($_SESSION['email'])) {
@@ -9,8 +6,6 @@ if (!isset($_SESSION['email'])) {
 }
 
 include_once '../config.php';
-$result = mysqli_query($conn,"SELECT * FROM employee");
-
 
 $data = file_get_contents('../incidentdata.json');
 

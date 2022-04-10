@@ -6,7 +6,6 @@ if (!isset($_SESSION['email'])) {
 }
 
 include_once '../config.php';
-$result = mysqli_query($conn,"SELECT * FROM employee");
 //
 
 $data = file_get_contents('../incidentdata.json');
@@ -257,6 +256,13 @@ $findByincnme = function($id) use ($objitemsinc) {
                             </div>
                           </td>
                           <td class="text-nowrap text-muted"><?php echo date('M/d/Y',strtotime("-1 days")) ?></td>
+						  <?php
+                          if($control4 == "") {
+
+                          } else {
+                              echo("<td class=\"text-nowrap text-muted\"><button onclick=\"window.location.href='./update-incident.php'\" type=\"button\" class=\"btn\">Edit</button></td>");
+                          }
+                          ?>
                         </tr>
                         <tr>
                           <td class="td-truncate">

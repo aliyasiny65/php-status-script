@@ -7,7 +7,6 @@ if (!isset($_SESSION['email'])) {
 }
 
 include_once '../config.php';
-$result = mysqli_query($conn,"SELECT * FROM employee");
 
 $sitename = $_POST['sname'];
 $sitedesc = $_POST['desc'];

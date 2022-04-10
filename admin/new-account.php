@@ -1,145 +1,43 @@
 <?php
-    include "../config.php";
-    session_start();
+session_start();
 
-    if (!isset($_SESSION['email'])) {
-        header("Location: index.php");
-    }
-	$button = $_POST['button'];
+if (!isset($_SESSION['email'])) {
+    header("Location: index.php");
+}
 
-    include_once '../config.php';
+include_once '../config.php';
 
-    $versioncheck = file_get_contents("https://cdn.aliyasin.org/status/version.json");
-    $json = json_decode($versioncheck, true);
-    
-    foreach ($json as $key => $value) {
-        if (!is_array($value)) {
-            echo $key . $value;
-        } else {
-            foreach ($value as $key => $val) {
-                $ver = $val;
-            }
-        }
-    }
-    if($version < $ver) {
-        $update = "Update Available!";
-    } else {
-        $update = "Already up to date.";
-    }
-	if($ver == "") {
-		$update = "Error checking for updates";
-	};
-	if (isset($_POST['button'])) {
-	//CREATE BACKUP
-	$docroot = $_SERVER["DOCUMENT_ROOT"];
-	mkdir("backup");
-	mkdir("backup/admin");
-	copy("$docroot/ajax.php", "$docroot/admin/backup/ajax.php");
-	copy("$docroot/bg.jpg", "$docroot/admin/backup/bg.jpg");
-	copy("$docroot/config.php", "$docroot/admin/backup/config.php");
-	copy("$docroot/data.json", "$docroot/admin/backup/data.json");
-	copy("$docroot/incidentdata.json", "$docroot/admin/backup/incidentdata.json");
-	copy("$docroot/index.php", "$docroot/admin/backup/index.php");
-	copy("$docroot/report.php", "$docroot/admin/backup/report.php");
-	copy("$docroot/reports.json", "$docroot/admin/backup/reports.json");
-	copy("$docroot/script.js", "$docroot/admin/backup/script.js");
-	copy("$docroot/style.css", "$docroot/admin/backup/style.css");
-	copy("$docroot/stylemain.css", "$docroot/admin/backup/stylemain.css");
-	function custom_copy($src, $dst) { 
-		$dir = opendir($src); 
-		@mkdir($dst); 
-		while( $file = readdir($dir) ) { 
-	  
-			if (( $file != '.' ) && ( $file != '..' )) { 
-				if ( is_dir($src . '/' . $file) ) 
-				{ 
-					custom_copy($src . '/' . $file, $dst . '/' . $file); 
-	  
-				} 
-				else { 
-					copy($src . '/' . $file, $dst . '/' . $file); 
-				} 
-			} 
-		} 
-	  
-		closedir($dir);
-	} 
-	  
-	$src = "$docroot/admin/dist";
-	  
-	$dst = "$docroot/admin/backup/admin/dist";
-	  
-	custom_copy($src, $dst);
-	
-	$srcs = "$docroot/admin/static";
-	  
-	$dsts = "$docroot/admin/backup/admin/static";
-	  
-	custom_copy($srcs, $dsts);
-	copy("$docroot/admin/create-incident.php", "$docroot/admin/backup/admin/create-incident.php");
-	copy("$docroot/admin/edit-category.php", "$docroot/admin/backup/admin/edit-category.php");
-	copy("$docroot/admin/edit-site.php", "$docroot/admin/backup/admin/edit-site.php");
-	copy("$docroot/admin/index.php", "$docroot/admin/backup/admin/index.php");
-	copy("$docroot/admin/logout.php", "$docroot/admin/backup/admin/logout.php");
-	copy("$docroot/admin/mng-incidents.php", "$docroot/admin/backup/admin/mng-incidents.php");
-	copy("$docroot/admin/panel.php", "$docroot/admin/backup/admin/panel.php");
-	copy("$docroot/admin/reports.php", "$docroot/admin/backup/admin/reports.php");
-	copy("$docroot/admin/update-incident.php", "$docroot/admin/backup/admin/update-incident.php");
-	copy("$docroot/admin/account.php", "$docroot/admin/backup/admin/account.php");
-
-
-	//UPDATE DOWNLOAD
-    $url = "https://cdn.aliyasin.org/status/script$ver.zip";
-    $file_name = "../update.zip";
-    if (file_put_contents($file_name, file_get_contents($url)))
-    {
-       //UNZIP UPDATE
-	   $zip = new ZipArchive;
-	   if ($zip->open('../update.zip') === TRUE) {
-		   $zip->extractTo('../');
-		   $zip->close();
-		   echo 'Update Unzipped Process Successful!';
-		   $DELETE = "\$version = '$version';";
-		   $data = file("../config.php");
-		   $out = array();
-
-		   foreach($data as $line) {
-		       if(trim($line) != $DELETE) {
-		           $out[] = $line;
-		       }
-		   }
-	   
-		   $fp = fopen("../config.php", "w+");
-		   flock($fp, LOCK_EX);
-		   foreach($out as $line) {
-		       fwrite($fp, $line);
-		   }
-		   flock($fp, LOCK_UN);
-		   fclose($fp);
-		   $datad="\$version = '$ver';";
-		   $filecontentd=file_get_contents('../config.php');
-		   "?>";
-		   $posd=strpos($filecontentd, '?>');
-		   $filecontentd=substr($filecontentd, 0, $posd)."".$datad."\r\n".substr($filecontentd, $posd);
-		   file_put_contents("../config.php", $filecontentd);
-		   unlink("../update.zip");
+if (isset($_POST['submit'])) {
+	$email = $_POST['email'];
+	$password = md5($_POST['password']);
+	$sql = "SELECT * FROM users WHERE email='$email'";
+	$result = mysqli_query($conn, $sql);
+	if (!$result->num_rows > 0) {
+		$sql = "INSERT INTO users (email, password)
+				VALUES ('$email', '$password')";
+		$result = mysqli_query($conn, $sql);
+		if ($result) {
+			echo "<script>alert('The account has been successfully added.')</script>";
+			$email = "";
+			$_POST['password'] = "";
 		} else {
-			echo 'Update Unzipped Process failed.';
-	   };
-    }
-    else
-    {
-        echo "File downloading failed. Try again.";
-    }
-};
+			echo "<script>alert('Something went wrong. Try again.')</script>";
+		}
+	} else {
+		echo "<script>alert('This account already exists.')</script>";
+	}	
+}
+
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <title><?php echo($sname) ?> Admin</title>
+    <title><?php echo($sname) ?> Admin | Account</title>
     <!-- CSS files -->
     <link href="./dist/css/tabler.min.css" rel="stylesheet"/>
     <link href="./dist/css/tabler-flags.min.css" rel="stylesheet"/>
@@ -245,7 +143,7 @@
                     </a>
                   </div>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item active">
                   <a class="nav-link dropdown-toggle" href="#navbar-layout" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                       <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="4" y="4" width="6" height="5" rx="2" /><rect x="4" y="13" width="6" height="7" rx="2" /><rect x="14" y="4" width="6" height="7" rx="2" /><rect x="14" y="15" width="6" height="5" rx="2" /></svg>
@@ -273,7 +171,7 @@
                     </div>
                   </div>
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item">
                   <a class="nav-link" href="./updater.php" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rotate" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M19.95 11a8 8 0 1 0 -.5 4m.5 5v-5h-5"></path></svg>
@@ -295,31 +193,32 @@
               <div class="col">
                 <!-- Page pre-title -->
                 <div class="page-pretitle">
+                  Site Settings
                 </div>
                 <h2 class="page-title">
-                  Updater
+                  Account
                 </h2>
               </div>
-        	<div class="card-body text-center py-4 p-sm-5">
-			  <svg xmlns="http://www.w3.org/2000/svg" class="mb-n2" width="160" height="160" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M19.95 11a8 8 0 1 0 -.5 4m.5 5v-5h-5"></path></svg>
-			<div class="text-center">
-				<h1 class="mt-5"><?php echo($update); ?></h1>
-				<h1 class=""><?php echo($ver); ?></h1>
+            </div>
+      <form action="" method="POST">
+		<div class="col-md-6 col-xl-12">
+            <div class="mb-3">
+				<input class="form-control" type="email" placeholder="Email" name="email" value="<?php echo $_POST['email']; ?>" required>
 			</div>
-			<?php
-			if($update == "Update Available!") {
-				echo("
-			<form method=\"POST\" class=\"\">
-				<div class=\"text-center mt-4\">
-					<button name=\"button\" id=\"button\" class=\"btn\">Update Install</button>
-				</div>
-			</form>
-			");
-			}
-			?>
-			</div>
+        </div>
+		<div class="col-md-6 col-xl-12">
+            <div class="mb-3">
+				<input class="form-control" type="password" placeholder="Password" name="password" value="<?php echo $_POST['password']; ?>" required>
+            </div>
+        </div>
+			<div class="col-md-6 col-xl-12">
+            <div class="mb-3">
+				<button name="submit" class="btn">Add Admin Account</button>
+            </div>
+            </div>
+		</form>
 
-        <footer class="footer footer-transparent d-print-none">
+<footer class="footer footer-transparent d-print-none">
           <div class="container-xl">
             <div class="row text-center align-items-center flex-row-reverse">
               <div class="col-lg-auto ms-lg-auto">
