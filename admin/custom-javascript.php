@@ -6,25 +6,19 @@ if (!isset($_SESSION['email'])) {
 }
 
 include_once '../config.php';
-//
 
-$data = file_get_contents('../incidentdata.json');
+if (isset($_POST['submit'])) {
+$customjsform = $_POST['customjs'];
+$file_path = "../assets/customjs.js";
 
-$json_arr = json_decode($data, true);
+$file_handle = fopen($file_path, 'w'); 
+fwrite($file_handle, $customjsform);
+fclose($file_handle);
+};
 
-foreach ($json_arr as $key => $value) {
-    //echo echo $json_arr[0]['id'];
-}
-
-$jsoniteminc = file_get_contents("../incidentdata.json");
-
-$objitemsinc = json_decode($jsoniteminc);
-$findByincnme = function($id) use ($objitemsinc) {
-    foreach ($objitemsinc as $incnme) {
-        if ($incnme->id == $id) return $incnme->incname;
-     }
-    }
 ?>
+
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -33,6 +27,7 @@ $findByincnme = function($id) use ($objitemsinc) {
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title><?php echo($sname) ?> Admin</title>
 	<link rel="icon" type="image/png" href="../favicon.png" />
+	<script src="../assets/customjs.js"></script>
     <!-- CSS files -->
     <link href="./dist/css/tabler.min.css" rel="stylesheet"/>
     <link href="./dist/css/tabler-flags.min.css" rel="stylesheet"/>
@@ -79,9 +74,8 @@ $findByincnme = function($id) use ($objitemsinc) {
 
     };
     ?>
-	<script src="../assets/customjs.js"></script>
   </head>
-  <body>
+  <body >
     <div class="wrapper">
       <header class="navbar navbar-expand-md navbar-light d-print-none">
         <div class="container-xl">
@@ -139,7 +133,7 @@ $findByincnme = function($id) use ($objitemsinc) {
                     </span>
                   </a>
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                       <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3" /><line x1="12" y1="12" x2="20" y2="7.5" /><line x1="12" y1="12" x2="12" y2="21" /><line x1="12" y1="12" x2="4" y2="7.5" /><line x1="16" y1="5.25" x2="8" y2="9.75" /></svg>
@@ -179,7 +173,7 @@ $findByincnme = function($id) use ($objitemsinc) {
                     </a>
                   </div>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item active">
                   <a class="nav-link dropdown-toggle" href="#navbar-layout" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                       <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="4" y="4" width="6" height="5" rx="2" /><rect x="4" y="13" width="6" height="7" rx="2" /><rect x="14" y="4" width="6" height="7" rx="2" /><rect x="14" y="15" width="6" height="5" rx="2" /></svg>
@@ -206,7 +200,7 @@ $findByincnme = function($id) use ($objitemsinc) {
 						<a class="dropdown-item" href="./edit-analytics.php" >
                           Analytics
                         </a>
-						<a class="dropdown-item" href="./custom-javascript.php" >
+                        <a class="dropdown-item" href="./custom-javascript.php" >
                           Custom JS Loader
                         </a>
                       </div>
@@ -235,151 +229,19 @@ $findByincnme = function($id) use ($objitemsinc) {
               <div class="col">
                 <!-- Page pre-title -->
                 <div class="page-pretitle">
-                  Incidents
+                  Site Settings
                 </div>
                 <h2 class="page-title">
-                  Manage Incidents
+                  Custom JS Loader
                 </h2>
               </div>
-              <!-- Page title actions -->
-              <div class="col-auto ms-auto d-print-none">
-                <div class="btn-list">
-                  <a href="create-incident.php" class="btn btn-primary d-none d-sm-inline-block">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-                    Create new incident
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
+
+    <form action="" method="POST">
+        <div class="mb-3">
+            <textarea class="form-control" name="customjs" id="customjs" rows="6" placeholder="Your Javascript Code"></textarea>
         </div>
-
-        <div class="page-body">
-          <div class="container-xl">
-              <div class="col-lg-6">
-                <div class="card">
-                  <div class="card-table table-responsive">
-                    <table class="table table-vcenter">
-                      <thead>
-                        <tr>
-                          <th>Incident Status</th>
-                          <th>Date</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td class="td-truncate">
-                            <div class="text-truncate">
-                              <?php 
-                              $control5 = $findByincnme(date('M/d/Y'));
-                              if($control5 == "") {
-                                echo("No incidents reported.");
-                              } else {
-                              echo $findByincnme(date('M/d/Y'));
-                              } 
-                              ?>
-                            </div>
-                          </td>
-                          <td class="text-nowrap text-muted"><?php echo date('M/d/Y') ?> </td>
-                          <?php
-                          if($control5 == "") {
-
-                          } else {
-                              echo("<td class=\"text-nowrap text-muted\"><button onclick=\"window.location.href='./update-incident.php'\" type=\"button\" class=\"btn\">Edit</button></td>");
-                          }
-                          ?>
-                        </tr>
-                        <tr>
-                          <td class="td-truncate">
-                            <div class="text-truncate">
-                            <?php 
-                              $control4 = $findByincnme(date('M/d/Y',strtotime("-1 days")));
-                              if($control4 == "") {
-                                echo("No incidents reported.");
-                              } else {
-                              echo $findByincnme(date('M/d/Y',strtotime("-1 days")));
-                              } 
-                              ?>
-                            </div>
-                          </td>
-                          <td class="text-nowrap text-muted"><?php echo date('M/d/Y',strtotime("-1 days")) ?></td>
-						  <?php
-                          if($control4 == "") {
-
-                          } else {
-                              echo("<td class=\"text-nowrap text-muted\"><button onclick=\"window.location.href='./update-incident.php'\" type=\"button\" class=\"btn\">Edit</button></td>");
-                          }
-                          ?>
-                        </tr>
-                        <tr>
-                          <td class="td-truncate">
-                            <div class="text-truncate">
-                            <?php 
-                              $control3 = $findByincnme(date('M/d/Y',strtotime("-2 days")));
-                              if($control3 == "") {
-                                echo("No incidents reported.");
-                              } else {
-                              echo $findByincnme(date('M/d/Y',strtotime("-2 days")));
-                              } 
-                              ?>
-                            </div>
-                          </td>
-                          <td class="text-nowrap text-muted"><?php echo date('M/d/Y',strtotime("-2 days")) ?></td>
-                        </tr>
-                        <tr>
-                          <td class="td-truncate">
-                            <div class="text-truncate">
-                            <?php 
-                              $control2 = $findByincnme(date('M/d/Y',strtotime("-3 days")));
-                              if($control2 == "") {
-                                echo("No incidents reported.");
-                              } else {
-                              echo $findByincnme(date('M/d/Y',strtotime("-3 days")));
-                              } 
-                              ?>
-                            </div>
-                          </td>
-                          <td class="text-nowrap text-muted"><?php echo date('M/d/Y',strtotime("-3 days")); ?></td>
-                        </tr>
-                        <tr>
-                          <td class="td-truncate">
-                            <div class="text-truncate">
-                            <?php 
-                              $control1 = $findByincnme(date('M/d/Y',strtotime("-4 days")));
-                              if($control1 == "") {
-                                echo("No incidents reported.");
-                              } else {
-                              echo $findByincnme(date('M/d/Y',strtotime("-4 days")));
-                              } 
-                              ?>
-                            </div>
-                          </td>
-                          <td class="text-nowrap text-muted"><?php echo date('M/d/Y',strtotime("-4 days")); ?></td>
-                        </tr>
-                        <tr>
-                          <td class="td-truncate">
-                            <div class="text-truncate">
-                            <?php 
-                              $control0 = $findByincnme(date('M/d/Y',strtotime("-5 days")));
-                              if($control0 == "") {
-                                echo("No incidents reported.");
-                              } else {
-                              echo $findByincnme(date('M/d/Y',strtotime("-5 days")));
-                              } 
-                              ?>
-                            </div>
-                          </td>
-                          <td class="text-nowrap text-muted"><?php echo date('M/d/Y',strtotime("-5 days")); ?></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                </div>
-              </div>
-              <small class="form-hint">
-              Note: You can only edit events that happened during that day.
-            </small>
-
+            <button name="submit" class="btn">Save Changes</button>
+        </form>
         <footer class="footer footer-transparent d-print-none">
           <div class="container-xl">
             <div class="row text-center align-items-center flex-row-reverse">

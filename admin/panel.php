@@ -32,14 +32,56 @@ $findByincnme = function($id) use ($objitemsinc) {
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title><?php echo($sname) ?> Admin</title>
+	<link rel="icon" type="image/png" href="../favicon.png" />
     <!-- CSS files -->
     <link href="./dist/css/tabler.min.css" rel="stylesheet"/>
     <link href="./dist/css/tabler-flags.min.css" rel="stylesheet"/>
     <link href="./dist/css/tabler-payments.min.css" rel="stylesheet"/>
     <link href="./dist/css/tabler-vendors.min.css" rel="stylesheet"/>
     <link href="./dist/css/demo.min.css" rel="stylesheet"/>
+	<?php
+    //MATOMO ANALYTICS
+    if($matomo == "enabled") {
+      echo("
+      <!-- Matomo -->
+        <script>
+          var _paq = window._paq = window._paq || [];
+          _paq.push(['trackPageView']);
+          _paq.push(['enableLinkTracking']);
+          (function() {
+            var u=\"$matomourl\";
+            _paq.push(['setTrackerUrl', u+'matomo.php']);
+            _paq.push(['setSiteId', '$matomoid']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+          })();
+        </script>
+        <!-- End Matomo Code -->
+      ");
+    } else {
+
+    };
+
+    //GOOGLE ANALYTICS
+    if($ganalytics == "enabled") {
+      echo("
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+      <script async src=\"https://www.googletagmanager.com/gtag/js?id=$ganalyticsid\"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '$ganalyticsid');
+      </script>
+      ");
+    } else {
+
+    };
+    ?>
+	<script src="../assets/customjs.js"></script>
   </head>
-  <body >
+  <body>
     <div class="wrapper">
       <header class="navbar navbar-expand-md navbar-light d-print-none">
         <div class="container-xl">
@@ -161,6 +203,12 @@ $findByincnme = function($id) use ($objitemsinc) {
                         <a class="dropdown-item" href="./edit-config.php" >
                           Configure Database
                         </a>
+						<a class="dropdown-item" href="./edit-analytics.php" >
+                          Analytics
+                        </a>
+						<a class="dropdown-item" href="./custom-javascript.php" >
+                          Custom JS Loader
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -207,10 +255,9 @@ $findByincnme = function($id) use ($objitemsinc) {
         </div>
         <div class="page-body">
           <div class="container-xl">
-            <div class="row row-deck row-cards">
               <div class="col-lg-6">
                 <div class="card">
-                  <div class="card-header border-0">
+				<div class="card-header border-0">
                     <div class="card-title">Activity</div>
                   </div>
                   <div class="card-table table-responsive">
@@ -219,6 +266,7 @@ $findByincnme = function($id) use ($objitemsinc) {
                         <tr>
                           <th>Incident Status</th>
                           <th>Date</th>
+                          <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -226,17 +274,17 @@ $findByincnme = function($id) use ($objitemsinc) {
                           <td class="td-truncate">
                             <div class="text-truncate">
                               <?php 
-                              $control5 = $json_arr[5]['incname'];
+                              $control5 = $findByincnme(date('M/d/Y'));
                               if($control5 == "") {
                                 echo("No incidents reported.");
                               } else {
-                              echo $json_arr[5]['incname'];
+                              echo $findByincnme(date('M/d/Y'));
                               } 
                               ?>
                             </div>
                           </td>
-                          <td class="text-nowrap text-muted"><?php echo date('M/d/Y') ?></td>
-						  <?php
+                          <td class="text-nowrap text-muted"><?php echo date('M/d/Y') ?> </td>
+                          <?php
                           if($control5 == "") {
 
                           } else {
@@ -258,6 +306,13 @@ $findByincnme = function($id) use ($objitemsinc) {
                             </div>
                           </td>
                           <td class="text-nowrap text-muted"><?php echo date('M/d/Y',strtotime("-1 days")) ?></td>
+						  <?php
+                          if($control4 == "") {
+
+                          } else {
+                              echo("<td class=\"text-nowrap text-muted\"><button onclick=\"window.location.href='./update-incident.php'\" type=\"button\" class=\"btn\">Edit</button></td>");
+                          }
+                          ?>
                         </tr>
                         <tr>
                           <td class="td-truncate">
@@ -321,7 +376,6 @@ $findByincnme = function($id) use ($objitemsinc) {
                         </tr>
                       </tbody>
                     </table>
-                  </div>
                 </div>
               </div>
         <footer class="footer footer-transparent d-print-none">

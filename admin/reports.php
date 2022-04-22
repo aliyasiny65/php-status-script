@@ -1,4 +1,9 @@
 <?php
+header("Expires: Tue, 01 Jan 2000 00:00:00 GMT");
+header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
 
 session_start();
 
@@ -17,6 +22,7 @@ include_once '../config.php';
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title>Reports</title>
+	<link rel="icon" type="image/png" href="../favicon.png" />
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <link href="./dist/css/tabler.min.css" rel="stylesheet"/>
     <link href="./dist/css/tabler-flags.min.css" rel="stylesheet"/>
@@ -58,6 +64,47 @@ include_once '../config.php';
             font-weight: lighter;
         }
     </style>
+	<?php
+    //MATOMO ANALYTICS
+    if($matomo == "enabled") {
+      echo("
+      <!-- Matomo -->
+        <script>
+          var _paq = window._paq = window._paq || [];
+          _paq.push(['trackPageView']);
+          _paq.push(['enableLinkTracking']);
+          (function() {
+            var u=\"$matomourl\";
+            _paq.push(['setTrackerUrl', u+'matomo.php']);
+            _paq.push(['setSiteId', '$matomoid']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+          })();
+        </script>
+        <!-- End Matomo Code -->
+      ");
+    } else {
+
+    };
+
+    //GOOGLE ANALYTICS
+    if($ganalytics == "enabled") {
+      echo("
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+      <script async src=\"https://www.googletagmanager.com/gtag/js?id=$ganalyticsid\"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '$ganalyticsid');
+      </script>
+      ");
+    } else {
+
+    };
+    ?>
+	<script src="../assets/customjs.js"></script>
 </head>
   
 <body>
@@ -181,6 +228,12 @@ include_once '../config.php';
                         </a>
                         <a class="dropdown-item" href="./edit-config.php" >
                           Configure Database
+                        </a>
+						<a class="dropdown-item" href="./edit-analytics.php" >
+                          Analytics
+                        </a>
+						<a class="dropdown-item" href="./custom-javascript.php" >
+                          Custom JS Loader
                         </a>
                       </div>
                     </div>

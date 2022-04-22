@@ -5,7 +5,6 @@
     if (!isset($_SESSION['email'])) {
         header("Location: index.php");
     }
-	$button = $_POST['button'];
 
     include_once '../config.php';
 
@@ -35,16 +34,17 @@
 	mkdir("backup");
 	mkdir("backup/admin");
 	copy("$docroot/ajax.php", "$docroot/admin/backup/ajax.php");
-	copy("$docroot/bg.jpg", "$docroot/admin/backup/bg.jpg");
+	copy("$docroot/assets/bg.jpg", "$docroot/admin/backup/assets/bg.jpg");
 	copy("$docroot/config.php", "$docroot/admin/backup/config.php");
 	copy("$docroot/data.json", "$docroot/admin/backup/data.json");
 	copy("$docroot/incidentdata.json", "$docroot/admin/backup/incidentdata.json");
 	copy("$docroot/index.php", "$docroot/admin/backup/index.php");
 	copy("$docroot/report.php", "$docroot/admin/backup/report.php");
 	copy("$docroot/reports.json", "$docroot/admin/backup/reports.json");
-	copy("$docroot/script.js", "$docroot/admin/backup/script.js");
-	copy("$docroot/style.css", "$docroot/admin/backup/style.css");
-	copy("$docroot/stylemain.css", "$docroot/admin/backup/stylemain.css");
+	copy("$docroot/assets/script.js", "$docroot/admin/backup/assets/script.js");
+	copy("$docroot/assets/style.css", "$docroot/admin/backup/assets/style.css");
+	copy("$docroot/assets/stylemain.css", "$docroot/admin/backup/assets/stylemain.css");
+	copy("$docroot/assets/translate.js", "$docroot/admin/backup/assets/translate.js");
 	function custom_copy($src, $dst) { 
 		$dir = opendir($src); 
 		@mkdir($dst); 
@@ -140,14 +140,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title><?php echo($sname) ?> Admin</title>
+	<link rel="icon" type="image/png" href="../favicon.png" />
     <!-- CSS files -->
     <link href="./dist/css/tabler.min.css" rel="stylesheet"/>
     <link href="./dist/css/tabler-flags.min.css" rel="stylesheet"/>
     <link href="./dist/css/tabler-payments.min.css" rel="stylesheet"/>
     <link href="./dist/css/tabler-vendors.min.css" rel="stylesheet"/>
     <link href="./dist/css/demo.min.css" rel="stylesheet"/>
+	<?php
+    //MATOMO ANALYTICS
+    if($matomo == "enabled") {
+      echo("
+      <!-- Matomo -->
+        <script>
+          var _paq = window._paq = window._paq || [];
+          _paq.push(['trackPageView']);
+          _paq.push(['enableLinkTracking']);
+          (function() {
+            var u=\"$matomourl\";
+            _paq.push(['setTrackerUrl', u+'matomo.php']);
+            _paq.push(['setSiteId', '$matomoid']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+          })();
+        </script>
+        <!-- End Matomo Code -->
+      ");
+    } else {
+
+    };
+
+    //GOOGLE ANALYTICS
+    if($ganalytics == "enabled") {
+      echo("
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+      <script async src=\"https://www.googletagmanager.com/gtag/js?id=$ganalyticsid\"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '$ganalyticsid');
+      </script>
+      ");
+    } else {
+
+    };
+    ?>
+	<script src="../assets/customjs.js"></script>
   </head>
-  <body >
+  <body>
     <div class="wrapper">
       <header class="navbar navbar-expand-md navbar-light d-print-none">
         <div class="container-xl">
@@ -268,6 +310,12 @@
                         </a>
                         <a class="dropdown-item" href="./edit-config.php" >
                           Configure Database
+                        </a>
+						<a class="dropdown-item" href="./edit-analytics.php" >
+                          Analytics
+                        </a>
+						<a class="dropdown-item" href="./custom-javascript.php" >
+                          Custom JS Loader
                         </a>
                       </div>
                     </div>

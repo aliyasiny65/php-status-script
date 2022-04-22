@@ -35,13 +35,55 @@ if (isset($_POST['submit'])) {
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+	<script src="../assets/customjs.js"></script>
     <title><?php echo($sname) ?> Admin | Account</title>
+	<link rel="icon" type="image/png" href="../favicon.png" />
     <!-- CSS files -->
     <link href="./dist/css/tabler.min.css" rel="stylesheet"/>
     <link href="./dist/css/tabler-flags.min.css" rel="stylesheet"/>
     <link href="./dist/css/tabler-payments.min.css" rel="stylesheet"/>
     <link href="./dist/css/tabler-vendors.min.css" rel="stylesheet"/>
     <link href="./dist/css/demo.min.css" rel="stylesheet"/>
+	<?php
+    //MATOMO ANALYTICS
+    if($matomo == "enabled") {
+      echo("
+      <!-- Matomo -->
+        <script>
+          var _paq = window._paq = window._paq || [];
+          _paq.push(['trackPageView']);
+          _paq.push(['enableLinkTracking']);
+          (function() {
+            var u=\"$matomourl\";
+            _paq.push(['setTrackerUrl', u+'matomo.php']);
+            _paq.push(['setSiteId', '$matomoid']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+          })();
+        </script>
+        <!-- End Matomo Code -->
+      ");
+    } else {
+
+    };
+
+    //GOOGLE ANALYTICS
+    if($ganalytics == "enabled") {
+      echo("
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+      <script async src=\"https://www.googletagmanager.com/gtag/js?id=$ganalyticsid\"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '$ganalyticsid');
+      </script>
+      ");
+    } else {
+
+    };
+    ?>
   </head>
   <body >
     <div class="wrapper">
@@ -165,6 +207,12 @@ if (isset($_POST['submit'])) {
                         <a class="dropdown-item" href="./edit-config.php" >
                           Configure Database
                         </a>
+						<a class="dropdown-item" href="./edit-analytics.php" >
+                          Analytics
+                        </a>
+						<a class="dropdown-item" href="./custom-javascript.php" >
+                          Custom JS Loader
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -206,12 +254,12 @@ if (isset($_POST['submit'])) {
     						<div class="col-md-6 col-xl-12">
     							<div class="mb-3">
     	                		<label class="form-label">New Email</label>
-    	                		<input type="text" class="form-control" placeholder="<?php echo("$usermail"); ?>" name="mail" value="<?php echo $_POST['mail']; ?>" required>
+    	                		<input type="text" class="form-control" placeholder="<?php echo("$usermail"); ?>" name="mail" required>
     	            		</div>
     						<div class="col-md-6 col-xl-12">
     							<div class="mb-3">
     	                		<label class="form-label">New Password</label>
-    	                		<input type="password" class="form-control" placeholder="Password" name="pass" value="<?php echo $_POST['pass']; ?>" required>
+    	                		<input type="password" class="form-control" placeholder="Password" name="pass" required>
     	            		</div>
     						<div class="input-group">
     							<button name="submit" class="btn">Update</button>

@@ -32,12 +32,53 @@ if (isset($_POST['submit'])) {
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <link rel="icon" type="image/png" href="../favicon.png" />
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-	<link rel="stylesheet" type="text/css" href="../style.css">
+	<link rel="stylesheet" type="text/css" href="../assets/style.css">
 
 	<title>Status Admin</title>
+  <script src="../assets/customjs.js"></script>
+	<?php
+    //MATOMO ANALYTICS
+    if($matomo == "enabled") {
+      echo("
+      <!-- Matomo -->
+        <script>
+          var _paq = window._paq = window._paq || [];
+          _paq.push(['trackPageView']);
+          _paq.push(['enableLinkTracking']);
+          (function() {
+            var u=\"$matomourl\";
+            _paq.push(['setTrackerUrl', u+'matomo.php']);
+            _paq.push(['setSiteId', '$matomoid']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+          })();
+        </script>
+        <!-- End Matomo Code -->
+      ");
+    } else {
+
+    };
+
+    //GOOGLE ANALYTICS
+    if($ganalytics == "enabled") {
+      echo("
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+      <script async src=\"https://www.googletagmanager.com/gtag/js?id=$ganalyticsid\"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '$ganalyticsid');
+      </script>
+      ");
+    } else {
+
+    };
+    ?>
 </head>
 <body>
 	<div class="container">

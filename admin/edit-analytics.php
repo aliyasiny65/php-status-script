@@ -1,30 +1,171 @@
 <?php 
+include "../config.php";
 session_start();
 
 if (!isset($_SESSION['email'])) {
     header("Location: index.php");
 }
-
-include_once '../config.php';
-//
-
-$data = file_get_contents('../incidentdata.json');
-
-$json_arr = json_decode($data, true);
-
-foreach ($json_arr as $key => $value) {
-    //echo echo $json_arr[0]['id'];
+    if (isset($_POST['submit'])) {
+        //MATOMO START
+        //OLD MATOMO SETTING DELETING
+        if($matomo == "enabled") {
+            $DELETE = "\$matomo = '$matomo';";
+            $datao = file("../config.php");
+        	$out = array();
+        	foreach($datao as $line) {
+        	    if(trim($line) != $DELETE) {
+        	        $out[] = $line;
+        	    }
+        	}
+        	$fp = fopen("../config.php", "w+");
+        	flock($fp, LOCK_EX);
+        	foreach($out as $line) {
+        	    fwrite($fp, $line);
+        	}
+        	flock($fp, LOCK_UN);
+        	fclose($fp);
+            //
+            $DELETE2 = "\$matomourl = '$matomourl';";
+            $datao = file("../config.php");
+        	$out = array();
+        	foreach($datao as $line) {
+        	    if(trim($line) != $DELETE2) {
+        	        $out[] = $line;
+        	    }
+        	}
+        	$fp = fopen("../config.php", "w+");
+        	flock($fp, LOCK_EX);
+        	foreach($out as $line) {
+        	    fwrite($fp, $line);
+        	}
+        	flock($fp, LOCK_UN);
+        	fclose($fp);
+            //
+            $DELETE3 = "\$matomoid = '$matomoid';";
+            $datao = file("../config.php");
+        	$out = array();
+        	foreach($datao as $line) {
+        	    if(trim($line) != $DELETE3) {
+        	        $out[] = $line;
+        	    }
+        	}
+        	$fp = fopen("../config.php", "w+");
+        	flock($fp, LOCK_EX);
+        	foreach($out as $line) {
+        	    fwrite($fp, $line);
+        	}
+        	flock($fp, LOCK_UN);
+        	fclose($fp);
+        } else if($matomo == "disabled") {
+            $DELETEa = "\$matomo = '$matomo';";
+            $datao = file("../config.php");
+        	$out = array();
+        	foreach($datao as $line) {
+        	    if(trim($line) != $DELETEa) {
+        	        $out[] = $line;
+        	    }
+        	}
+        	$fp = fopen("../config.php", "w+");
+        	flock($fp, LOCK_EX);
+        	foreach($out as $line) {
+        	    fwrite($fp, $line);
+        	}
+        	flock($fp, LOCK_UN);
+        	fclose($fp);
+        };
+        //MATOMO SETTING SAVING
+        if($_POST['matomo'] == "on") {
+            $matomourlform = $_POST['matomourl'];
+            $matomoidform = $_POST['matomoid'];
+            $data="\$matomo = 'enabled';\n\$matomourl = 'https://$matomourlform';\n\$matomoid = '$matomoidform';";
+            $filecontent=file_get_contents('../config.php');
+            "?>";
+            $pos=strpos($filecontent, '?>');
+            $filecontent=substr($filecontent, 0, $pos)."".$data."\r\n".substr($filecontent, $pos);
+            file_put_contents("../config.php", $filecontent);
+            header("Refresh:0");
+        } else {
+            $data="\$matomo = 'disabled';";
+            $filecontent=file_get_contents('../config.php');
+            "?>";
+            $pos=strpos($filecontent, '?>');
+            $filecontent=substr($filecontent, 0, $pos)."".$data."\r\n".substr($filecontent, $pos);
+            file_put_contents("../config.php", $filecontent);
+            header("Refresh:0");
+        };
+//MATOMO END
+//OLD GOOGLE ANALYTICS SETTING DELETE
+if($ganalytics == "enabled") {
+	$DELETE = "\$ganalytics = '$ganalytics';";
+	$datao = file("../config.php");
+	$out = array();
+	foreach($datao as $line) {
+		if(trim($line) != $DELETE) {
+			$out[] = $line;
+		}
+	}
+	$fp = fopen("../config.php", "w+");
+	flock($fp, LOCK_EX);
+	foreach($out as $line) {
+		fwrite($fp, $line);
+	}
+	flock($fp, LOCK_UN);
+	fclose($fp);
+	//
+	$DELETE2 = "\$ganalyticsid = '$ganalyticsid';";
+	$datao = file("../config.php");
+	$out = array();
+	foreach($datao as $line) {
+		if(trim($line) != $DELETE2) {
+			$out[] = $line;
+		}
+	}
+	$fp = fopen("../config.php", "w+");
+	flock($fp, LOCK_EX);
+	foreach($out as $line) {
+		fwrite($fp, $line);
+	}
+	flock($fp, LOCK_UN);
+	fclose($fp);
+} else if($ganalytics == "disabled") {
+	$DELETEa = "\$ganalytics = '$ganalytics';";
+	$datao = file("../config.php");
+	$out = array();
+	foreach($datao as $line) {
+		if(trim($line) != $DELETEa) {
+			$out[] = $line;
+		}
+	}
+	$fp = fopen("../config.php", "w+");
+	flock($fp, LOCK_EX);
+	foreach($out as $line) {
+		fwrite($fp, $line);
+	}
+	flock($fp, LOCK_UN);
+	fclose($fp);
+};
+//GOOGLE ANALYTICS START
+if($_POST['ganalytics'] == "on") {
+	$ganalyticsform = $_POST['gaid'];
+    $data="\$ganalytics = 'enabled';\n\$ganalyticsid = '$ganalyticsform';";
+    $filecontent=file_get_contents('../config.php');
+    "?>";
+    $pos=strpos($filecontent, '?>');
+    $filecontent=substr($filecontent, 0, $pos)."".$data."\r\n".substr($filecontent, $pos);
+    file_put_contents("../config.php", $filecontent);
+    header("Refresh:0");
+} else {
+	$data="\$ganalytics = 'disabled';";
+    $filecontent=file_get_contents('../config.php');
+    "?>";
+    $pos=strpos($filecontent, '?>');
+    $filecontent=substr($filecontent, 0, $pos)."".$data."\r\n".substr($filecontent, $pos);
+    file_put_contents("../config.php", $filecontent);
+    header("Refresh:0");
 }
-
-$jsoniteminc = file_get_contents("../incidentdata.json");
-
-$objitemsinc = json_decode($jsoniteminc);
-$findByincnme = function($id) use ($objitemsinc) {
-    foreach ($objitemsinc as $incnme) {
-        if ($incnme->id == $id) return $incnme->incname;
-     }
-    }
+};
 ?>
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -139,7 +280,7 @@ $findByincnme = function($id) use ($objitemsinc) {
                     </span>
                   </a>
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                       <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3" /><line x1="12" y1="12" x2="20" y2="7.5" /><line x1="12" y1="12" x2="12" y2="21" /><line x1="12" y1="12" x2="4" y2="7.5" /><line x1="16" y1="5.25" x2="8" y2="9.75" /></svg>
@@ -179,7 +320,7 @@ $findByincnme = function($id) use ($objitemsinc) {
                     </a>
                   </div>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item active">
                   <a class="nav-link dropdown-toggle" href="#navbar-layout" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                       <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="4" y="4" width="6" height="5" rx="2" /><rect x="4" y="13" width="6" height="7" rx="2" /><rect x="14" y="4" width="6" height="7" rx="2" /><rect x="14" y="15" width="6" height="5" rx="2" /></svg>
@@ -235,152 +376,45 @@ $findByincnme = function($id) use ($objitemsinc) {
               <div class="col">
                 <!-- Page pre-title -->
                 <div class="page-pretitle">
-                  Incidents
+                  Site Settings
                 </div>
                 <h2 class="page-title">
-                  Manage Incidents
+                  Analytics
                 </h2>
               </div>
-              <!-- Page title actions -->
-              <div class="col-auto ms-auto d-print-none">
-                <div class="btn-list">
-                  <a href="create-incident.php" class="btn btn-primary d-none d-sm-inline-block">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-                    Create new incident
-                  </a>
+
+            <form class="mb-3" method="POST">
+                <div class="form-label">Analytics Options:</div>
+                <label class="form-check form-switch">
+                  <input name="matomo" id="matomo" class="form-check-input" type="checkbox" <?php
+                  if($matomo == "enabled") {
+                      echo "checked";
+                  }
+                  ?>>
+                  <span class="form-check-label">Matomo Analytics</span>
+                <div class="input-group">
+                    <span class="input-group-text">
+                      https://
+                    </span>
+                    <input id="matomourl" name="matomourl" type="text" class="form-control"  placeholder="New Matomo URL Example: example.com">
+                    <input id="matomoid" name="matomoid" type="text" class="form-control"  placeholder="Your Site ID Example: 5">
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="page-body">
-          <div class="container-xl">
-              <div class="col-lg-6">
-                <div class="card">
-                  <div class="card-table table-responsive">
-                    <table class="table table-vcenter">
-                      <thead>
-                        <tr>
-                          <th>Incident Status</th>
-                          <th>Date</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td class="td-truncate">
-                            <div class="text-truncate">
-                              <?php 
-                              $control5 = $findByincnme(date('M/d/Y'));
-                              if($control5 == "") {
-                                echo("No incidents reported.");
-                              } else {
-                              echo $findByincnme(date('M/d/Y'));
-                              } 
-                              ?>
-                            </div>
-                          </td>
-                          <td class="text-nowrap text-muted"><?php echo date('M/d/Y') ?> </td>
-                          <?php
-                          if($control5 == "") {
-
-                          } else {
-                              echo("<td class=\"text-nowrap text-muted\"><button onclick=\"window.location.href='./update-incident.php'\" type=\"button\" class=\"btn\">Edit</button></td>");
-                          }
-                          ?>
-                        </tr>
-                        <tr>
-                          <td class="td-truncate">
-                            <div class="text-truncate">
-                            <?php 
-                              $control4 = $findByincnme(date('M/d/Y',strtotime("-1 days")));
-                              if($control4 == "") {
-                                echo("No incidents reported.");
-                              } else {
-                              echo $findByincnme(date('M/d/Y',strtotime("-1 days")));
-                              } 
-                              ?>
-                            </div>
-                          </td>
-                          <td class="text-nowrap text-muted"><?php echo date('M/d/Y',strtotime("-1 days")) ?></td>
-						  <?php
-                          if($control4 == "") {
-
-                          } else {
-                              echo("<td class=\"text-nowrap text-muted\"><button onclick=\"window.location.href='./update-incident.php'\" type=\"button\" class=\"btn\">Edit</button></td>");
-                          }
-                          ?>
-                        </tr>
-                        <tr>
-                          <td class="td-truncate">
-                            <div class="text-truncate">
-                            <?php 
-                              $control3 = $findByincnme(date('M/d/Y',strtotime("-2 days")));
-                              if($control3 == "") {
-                                echo("No incidents reported.");
-                              } else {
-                              echo $findByincnme(date('M/d/Y',strtotime("-2 days")));
-                              } 
-                              ?>
-                            </div>
-                          </td>
-                          <td class="text-nowrap text-muted"><?php echo date('M/d/Y',strtotime("-2 days")) ?></td>
-                        </tr>
-                        <tr>
-                          <td class="td-truncate">
-                            <div class="text-truncate">
-                            <?php 
-                              $control2 = $findByincnme(date('M/d/Y',strtotime("-3 days")));
-                              if($control2 == "") {
-                                echo("No incidents reported.");
-                              } else {
-                              echo $findByincnme(date('M/d/Y',strtotime("-3 days")));
-                              } 
-                              ?>
-                            </div>
-                          </td>
-                          <td class="text-nowrap text-muted"><?php echo date('M/d/Y',strtotime("-3 days")); ?></td>
-                        </tr>
-                        <tr>
-                          <td class="td-truncate">
-                            <div class="text-truncate">
-                            <?php 
-                              $control1 = $findByincnme(date('M/d/Y',strtotime("-4 days")));
-                              if($control1 == "") {
-                                echo("No incidents reported.");
-                              } else {
-                              echo $findByincnme(date('M/d/Y',strtotime("-4 days")));
-                              } 
-                              ?>
-                            </div>
-                          </td>
-                          <td class="text-nowrap text-muted"><?php echo date('M/d/Y',strtotime("-4 days")); ?></td>
-                        </tr>
-                        <tr>
-                          <td class="td-truncate">
-                            <div class="text-truncate">
-                            <?php 
-                              $control0 = $findByincnme(date('M/d/Y',strtotime("-5 days")));
-                              if($control0 == "") {
-                                echo("No incidents reported.");
-                              } else {
-                              echo $findByincnme(date('M/d/Y',strtotime("-5 days")));
-                              } 
-                              ?>
-                            </div>
-                          </td>
-                          <td class="text-nowrap text-muted"><?php echo date('M/d/Y',strtotime("-5 days")); ?></td>
-                        </tr>
-                      </tbody>
-                    </table>
+                </label>
+                <label class="form-check form-switch">
+                  <input name="ganalytics" id="ganalytics" class="form-check-input" type="checkbox" <?php
+                  if($ganalytics == "enabled") {
+                      echo "checked";
+                  }
+                  ?>>
+                  <span class="form-check-label">Google Analytics</span>
+                <div class="input-group">
+                    <input id="gaid" name="gaid" type="text" class="form-control"  placeholder="Your Site ID Example: G-123456XXXX">
                 </div>
-              </div>
-              <small class="form-hint">
-              Note: You can only edit events that happened during that day.
-            </small>
+                </label>
+                <button name="submit" id="submit" class="btn">Save Changes</button>
+            </form>
 
-        <footer class="footer footer-transparent d-print-none">
+<footer class="footer footer-transparent d-print-none">
           <div class="container-xl">
             <div class="row text-center align-items-center flex-row-reverse">
               <div class="col-lg-auto ms-lg-auto">
