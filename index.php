@@ -1,6 +1,5 @@
 <?php
 include "config.php";
-include "ajax.php";
 
 if (!file_exists("config.php")) {
     echo("
@@ -116,14 +115,75 @@ if(file_exists('incidentdata.json'))
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><?php echo($sname) ?> Status</title>
+    <link rel="icon" type="image/png" href="./favicon.png" />
     <meta property="og:title" content="<?php echo($sname) ?> Status" />
     <meta property="og:description" content="<?php echo($sdescription) ?>" />
     <meta property="og:image" content="favicon.png" />
-    <link rel="stylesheet" href="stylemain.css" />
+    <link rel="stylesheet" href="assets/stylemain.css" />
+    <style>
+    .green,.hover-green:hover{color:#fff!important;background-color:#4CAF50!important}
+    .hide-small{display:none!important}.mobile{display:block;width:100%!important}.bar-item.mobile,.dropdown-hover.mobile,.dropdown-click.mobile{text-align:center}
+    .bar .bar-item{padding:8px 16px;float:left;width:auto;border:none;display:block;outline:0}
+    .bar-block .bar-item{width:100%;display:block;padding:8px 16px;text-align:left;border:none;white-space:normal;float:none;outline:0}
+    .bar-block.center .bar-item{text-align:center}.block{display:block;width:100%}
+    .black,.hover-black:hover{color:#fff!important;background-color:#000!important}
+    .bar-block .dropdown-hover,.bar-block .dropdown-click{width:100%}
+    .bar-block .dropdown-hover .dropdown-content,.bar-block .dropdown-click .dropdown-content{min-width:100%}
+    .bar-block .dropdown-hover .button,.bar-block .dropdown-click .button{width:100%;text-align:left;padding:8px 16px}
+    .bar{width:100%;overflow:hidden}.center .bar{display:inline-block;width:auto}
+    .bar .bar-item{padding:8px 16px;float:left;width:auto;border:none;display:block;outline:0}
+    .bar .dropdown-hover,.bar .dropdown-click{position:static;float:left}
+    .bar .button{white-space:normal}
+    .bar-block .bar-item{width:100%;display:block;padding:8px 16px;text-align:left;border:none;white-space:normal;float:none;outline:0}
+    .bar-block.center .bar-item{text-align:center}.block{display:block;width:100%}
+    </style>
     <script
       src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js"
       defer
     ></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="assets/translate.js"></script>
+    <script src="assets/customjs.js"></script>
+    <?php
+    //MATOMO ANALYTICS
+    if($matomo == "enabled") {
+      echo("
+      <!-- Matomo -->
+        <script>
+          var _paq = window._paq = window._paq || [];
+          _paq.push(['trackPageView']);
+          _paq.push(['enableLinkTracking']);
+          (function() {
+            var u=\"$matomourl\";
+            _paq.push(['setTrackerUrl', u+'matomo.php']);
+            _paq.push(['setSiteId', '$matomoid']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+          })();
+        </script>
+        <!-- End Matomo Code -->
+      ");
+    } else {
+
+    };
+
+    //GOOGLE ANALYTICS
+    if($ganalytics == "enabled") {
+      echo("
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+      <script async src=\"https://www.googletagmanager.com/gtag/js?id=$ganalyticsid\"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '$ganalyticsid');
+      </script>
+      ");
+    } else {
+
+    };
+    ?>
   </head>
   <body>
     <script>
@@ -151,6 +211,10 @@ if(file_exists('incidentdata.json'))
         error => { console.log(error) }
     );
     </script>
+    <div class="bar black">
+    <a class="bar-item hover-green"><button id="en" class="translate">English</button></a>
+    <a class="bar-item hover-green"><button id="tr" class="translate">Turkish</button></a>
+    </div>
     <div class="dark:bg-dark">
       <header class="py-8 md:py-12 mb-8">
         <div
@@ -263,7 +327,7 @@ if(file_exists('incidentdata.json'))
                   fill="currentColor"
                 ></path>
               </svg>
-              Report an Issue
+              <ul><li class="lang" key="report">Report an Issue</li></ul>
             </button>
           </div>
         </div>
@@ -290,13 +354,13 @@ if(file_exists('incidentdata.json'))
             $sts2 = $findBystatus('category2');
             $sts3 = $findBystatus('category3');
             if($sts1 != "Operational") {
-              echo("$ctg1nme is Not Operational");
+              echo("$ctg1nme" . "&nbsp;" . "<ul><li class=\"lang\" key=\"ctgnotoperational\">is Not Operational</li></ul>");
             } else if($sts2 != "Operational") {
-              echo("$ctg2nme is Not Operational");
+              echo("$ctg2nme" . "&nbsp;" . "<ul><li class=\"lang\" key=\"ctgnotoperational\">is Not Operational</li></ul>");
             } else if($sts3 != "Operational") {
-              echo("$ctg3nme is Not Operational");
+              echo("$ctg3nme" . "&nbsp;" . "<ul><li class=\"lang\" key=\"ctgnotoperational\">is Not Operational</li></ul>");
             } else {
-              echo("All Systems Operational");
+              echo("<ul><li class=\"lang\" key=\"alloperational\">All Systems Operational</li></ul>");
             };
             ?>
           </div>
@@ -306,7 +370,7 @@ if(file_exists('incidentdata.json'))
         <h2
           class="container text-xs tracking-wide text-gray-500 dark:text-gray-300 uppercase font-bold mb-8"
         >
-          Monitors
+        <ul><li class="lang" key="monitors">MONITORS</li></ul>
         </h2>
         <div class="monitors space-y-6">
           <?php 
@@ -325,7 +389,14 @@ if(file_exists('incidentdata.json'))
                   echo("<span class=\"text-red-600 dark:text-red-400 font-semibold\">");
                 }
               ?>
-              <?php echo $findBystatus('category1') ?>
+              <?php
+              $ctg1status = $findBystatus('category1');
+              if($ctg1status == "Operational") {
+                echo ("<ul><li class=\"lang\" key=\"operational\">Operational</li></ul>");
+              } else if ($ctg1status == "Not Operational") {
+                echo ("<ul><li class=\"lang\" key=\"notoperational\">Not Operational</li></ul>");
+              }
+              ?>
               </span>
             </div>
             <div class="container bars">
@@ -359,7 +430,14 @@ if(file_exists('incidentdata.json'))
                   echo("<span class=\"text-red-600 dark:text-red-400 font-semibold\">");
                 }
               ?>
-              <?php echo $findBystatus('category2') ?>
+              <?php
+              $ctg2status = $findBystatus('category2');
+              if($ctg2status == "Operational") {
+                echo ("<ul><li class=\"lang\" key=\"operational\">Operational</li></ul>");
+              } else if ($ctg2status == "Not Operational") {
+                echo ("<ul><li class=\"lang\" key=\"notoperational\">Not Operational</li></ul>");
+              }
+              ?>
               </span>
             </div>
             <div class="container bars">
@@ -393,7 +471,14 @@ if(file_exists('incidentdata.json'))
                   echo("<span class=\"text-red-600 dark:text-red-400 font-semibold\">");
                 }
               ?>
-              <?php echo $findBystatus('category3') ?>
+              <?php
+              $ctg3status = $findBystatus('category3');
+              if($ctg3status == "Operational") {
+                echo ("<ul><li class=\"lang\" key=\"operational\">Operational</li></ul>");
+              } else if ($ctg3status == "Not Operational") {
+                echo ("<ul><li class=\"lang\" key=\"notoperational\">Not Operational</li></ul>");
+              }
+              ?>
               </span>
             </div>
             <div class="container bars">
@@ -414,7 +499,7 @@ if(file_exists('incidentdata.json'))
           <h2
             class="container text-2xl font-semibold tracking-tight text-gray-900 dark:text-gray-100"
           >
-            Past Incidents
+          <ul><li class="lang" key="pastincidents">Past Incidents</li></ul>
           </h2>
           <div class="container past-incidents">
             <template x-data x-for="i in 1"><div>
@@ -444,7 +529,7 @@ if(file_exists('incidentdata.json'))
                       ";
                     }
                     if($findByIdinc($buguninc) === "noinc") {
-                      echo("No incidents reported.");
+                      echo("<ul><li class=\"lang\" key=\"noincreported\">No incidents reported.</li></ul>");
                     } else {
                       if($findByincprgrs($buguninc) == "") {
                         echo("
@@ -503,7 +588,7 @@ if(file_exists('incidentdata.json'))
                        ";
                      }
                      if($findByIdinc($duninc) === "noinc") {
-                       echo("No incidents reported.");
+                       echo("<ul><li class=\"lang\" key=\"noincreported\">No incidents reported.</li></ul>");
                      } else {
                        if($findByincprgrs($duninc) == "") {
                          echo("
@@ -561,7 +646,7 @@ if(file_exists('incidentdata.json'))
                        ";
                      }
                      if($findByIdinc($ikiguninc) === "noinc") {
-                       echo("No incidents reported.");
+                       echo("<ul><li class=\"lang\" key=\"noincreported\">No incidents reported.</li></ul>");
                      } else {
                        if($findByincprgrs($ikiguninc) == "") {
                          echo("
@@ -619,7 +704,7 @@ if(file_exists('incidentdata.json'))
                        ";
                      }
                      if($findByIdinc($ucguninc) === "noinc") {
-                       echo("No incidents reported.");
+                       echo("<ul><li class=\"lang\" key=\"noincreported\">No incidents reported.</li></ul>");
                      } else {
                        if($findByincprgrs($ucguninc) == "") {
                          echo("
@@ -657,12 +742,12 @@ if(file_exists('incidentdata.json'))
           </div>
         </div>
       </main>
-      <script src="script.js"></script>
+      <script src="assets/script.js"></script>
       <footer class="py-16 text-gray-700 dark:text-gray-100 bg-gray-100 dark:bg-gray-800">
         <div class="container flex justify-between">
           <div>
             Powered by
-            <a href="https:/\/github.com/aliyasiny65"><span class="font semibold">Crypon Status</span></a>
+            <a href="https://github.com/aliyasiny65/php-status-script"><span class="font semibold">Crypon Status</span></a>
           </div>
         </div>
       </footer>

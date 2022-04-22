@@ -1,5 +1,1 @@
-[
-    {"id":"category1","name":"Website","status":"Operational"},
-    {"id":"category2","name":"API","status":"Operational"},
-    {"id":"category3","name":"Third Party","status":"Operational"}
-]
+[{"id":"category1","name":"Website","status":"Operational"},{"id":"category2","name":"API","status":"Operational"},{"id":"category3","name":"Third Party","status":"Operational"}]

@@ -11,13 +11,12 @@ $findByIdinc = function($id) use ($objitemsinc) {
 
     return false;
 };
-/*
+
 $dbcek = $conn->query("SELECT email FROM `users`");
 $array = $dbcek->fetch_array();
 $siteadmin = $array["email"];
-*/
+
 $control = $findByIdinc(date("M/d/Y"));
-//echo("$control");
 $jsonitem = file_get_contents("data.json");
 
 $objitems = json_decode($jsonitem);
@@ -56,20 +55,9 @@ if(file_exists('incidentdata.json'))
      }
 }
 }
-/*
-$domain = $findById('category1');
-$domain2 = $findById('category2');
-$domain3 = $findById('category3');
-if($domain == "") {
-    $domain = $_SERVER['SERVER_NAME'];
-};
-if($domain2 == "") {
-    $domain2 = $_SERVER['SERVER_NAME'];
-};
-if($domain3 == "") {
-    $domain3 = $_SERVER['SERVER_NAME'];
-};
 
+
+$domain = $_SERVER['SERVER_NAME'];
 
 function get_http_response_code($domain) {
   $headers = get_headers($domain);
@@ -77,109 +65,65 @@ function get_http_response_code($domain) {
 }
 
 $get_http_response_code = get_http_response_code($domain);
-if ( $get_http_response_code == 200  || $get_http_response_code == "") {
-  //
+
+if ( $get_http_response_code == 200 || $get_http_response_code == "") {
+//
 } else {
-  $msg = "Hello $sname Admin,\n Your Website Down\n Affected Category: Category 1\nPlease Check!";
-  mail($siteadmin,"Your Website Down",$msg);
-  $dataq = file_get_contents('incidentdata.json');
-  $json_arr = json_decode($dataq, true);
-
-    foreach ($json_arr as $key => $value) {
-        if ($value['id'] == date("M/d/Y")) {
-            $json_arr[$key]['history'] = "inc";
-            $json_arr[$key]['invst'] = date('M d, h:i A', time());
-        }
-    }
-
-    file_put_contents('incidentdata.json', json_encode($json_arr));
-
-    $datao = file_get_contents('data.json');
-
-    $json_arro = json_decode($datao, true);
-
-    foreach ($json_arro as $keyo => $valueo) {
-        if ($valueo['id'] == "category1") {
-            $json_arro[$keyo]['status'] = "Not Operational";
-        }
-    }
-
-    file_put_contents('data.json', json_encode($json_arro));
-}
-
-function get_http_response_code2($domain2) {
-  $headers = get_headers($domain2);
-  return substr($headers[0], 9, 3);
-}
-
-$get_http_response_code2 = get_http_response_code2($domain2);
-if ( $get_http_response_code2 == 200 || $get_http_response_code2 == "") {
-  //
-} else {
-  $msg2 = "Hello $sname Admin,\n Your Website Down\n Affected Category: Category 2\nPlease Check!";
-  mail($siteadmin,"Your Website Down",$msg2);
-  $dataq2 = file_get_contents('incidentdata.json');
-  $json_arr2 = json_decode($dataq2, true);
-
-    foreach ($json_arr2 as $key2 => $value2) {
-        if ($value2['id'] == date("M/d/Y")) {
-            $json_arr2[$key2]['history'] = "inc";
-            $json_arr2[$key2]['invst'] = date('M d, h:i A', time());
-        }
-    }
-
-    file_put_contents('incidentdata.json', json_encode($json_arr2));
-
-    $datao2 = file_get_contents('data.json');
-
-    $json_arro2 = json_decode($datao2, true);
-
-    foreach ($json_arro2 as $keyo2 => $valueo2) {
-        if ($valueo2['id'] == "category2") {
-            $json_arro2[$keyo2]['status'] = "Not Operational";
-        }
-    }
-
-    file_put_contents('data.json', json_encode($json_arro2));
-}
-
-function get_http_response_code3($domain3) {
-    $headers = get_headers($domain3);
-    return substr($headers[0], 9, 3);
-  }
-  
-  $get_http_response_code3 = get_http_response_code2($domain3);
-  if ( $get_http_response_code3 == 200 || $get_http_response_code3 == "") {
-    //
-  } else {
-    $msg3 = "Hello $sname Admin,\n Your Website Down\n Affected Category: Category 3\nPlease Check!";
-    mail($siteadmin,"Your Website Down",$msg3);
-    $dataq3 = file_get_contents('incidentdata.json');
-    $json_arr3 = json_decode($dataq3, true);
-  
-      foreach ($json_arr3 as $key3 => $value3) {
-          if ($value3['id'] == date("M/d/Y")) {
-              $json_arr3[$key3]['history'] = "inc";
-              $json_arr3[$key3]['invst'] = date('M d, h:i A', time());
+    $data = file_get_contents('incidentdata.json');
+    $json_arr = json_decode($data, true);
+      foreach ($json_arr as $key => $value) {
+          if ($value['id'] == date("M/d/Y")) {
+              $json_arr[$key]['history'] = "inc";
+              $json_arr[$key]['invst'] = date('M d, h:i A', time());
           }
       }
-  
-      file_put_contents('incidentdata.json', json_encode($json_arr3));
-  
-      $datao3 = file_get_contents('data.json');
-  
-      $json_arro3 = json_decode($datao3, true);
-  
-      foreach ($json_arro3 as $keyo3 => $valueo3) {
-          if ($valueo3['id'] == "category3") {
-              $json_arro3[$keyo3]['status'] = "Not Operational";
-          }
-      }
-  
-      file_put_contents('data.json', json_encode($json_arro3));
-  }*/
+      file_put_contents('incidentdata.json', json_encode($json_arr));
+}
 ?>
 <html>
+<head>
+<script src="assets/customjs.js"></script>
+<?php
+    //MATOMO ANALYTICS
+    if($matomo == "enabled") {
+      echo("
+      <!-- Matomo -->
+        <script>
+          var _paq = window._paq = window._paq || [];
+          _paq.push(['trackPageView']);
+          _paq.push(['enableLinkTracking']);
+          (function() {
+            var u=\"$matomourl\";
+            _paq.push(['setTrackerUrl', u+'matomo.php']);
+            _paq.push(['setSiteId', '$matomoid']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+          })();
+        </script>
+        <!-- End Matomo Code -->
+      ");
+    } else {
+
+    };
+
+    //GOOGLE ANALYTICS
+    if($ganalytics == "enabled") {
+      echo("
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+      <script async src=\"https://www.googletagmanager.com/gtag/js?id=$ganalyticsid\"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '$ganalyticsid');
+      </script>
+      ");
+    } else {
+
+    };
+    ?>
+</head>
 <body>
 <script>
       function AjaxCallWithPromise() {

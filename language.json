@@ -1,0 +1,24 @@
+{
+    "en": {
+      "home": "Home",
+      "report": "Report an Issue",
+      "alloperational": "All Systems Operational",
+      "ctgnotoperational": "is Not Operational",
+      "notoperational": "Not Operational",
+      "operational": "Operational",
+      "monitors": "MONITORS",
+      "pastincidents": "Past Incidents",
+      "noincreported": "No incidents reported."
+    },
+    "tr": {
+      "home": "Ana Sayfa",
+      "report": "Kesinti Rapor et",
+      "alloperational": "Tüm Sistemler Çalışır Durumda",
+      "ctgnotoperational": "adlı hizmet Arızalı",
+      "notoperational": "Sistem Arızalı",
+      "operational": "Çalışır Durumda",
+      "monitors": "Durumlar",
+      "pastincidents": "Son Kesintiler",
+      "noincreported": "Herhangi bir olay raporlanmadı."
+    }
+}
