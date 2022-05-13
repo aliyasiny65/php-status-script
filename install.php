@@ -14,7 +14,7 @@ if (isset($_POST['submit'])) {
     $password = md5($_POST['passwd']);
     if($conn) {
         $configfile = fopen("config.php", "w") or die("Unable to create config file!");
-        $data = "<?php \n\$sdescription = '$sdescription';\n\$sname = '$sname';\n\$server = '$servername';\n\$dbuser = '$dbuser';\n\$dbpass = '$dbpass';\n\$dbname = '$dbname';\n\$version = '1.5';\n\n\$matomo = 'disabled';\n\$ganalytics = 'disabled'; \$conn = mysqli_connect(\$server, \$dbuser, \$dbpass, \$dbname);\n\n?>";
+        $data = "<?php \n\$sdescription = '$sdescription';\n\$sname = '$sname';\n\$server = '$servername';\n\$dbuser = '$dbuser';\n\$dbpass = '$dbpass';\n\$dbname = '$dbname';\n\$version = '1.5';\n\n\$matomo = 'disabled';\n\$ganalytics = 'disabled';\n\$conn = mysqli_connect(\$server, \$dbuser, \$dbpass, \$dbname);\n\n?>";
         fwrite($configfile, $data);
         fclose($configfile);
         $sqlinj = file_get_contents('dbtable.sql');
