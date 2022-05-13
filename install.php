@@ -14,7 +14,7 @@ if (isset($_POST['submit'])) {
     $password = md5($_POST['passwd']);
     if($conn) {
         $configfile = fopen("config.php", "w") or die("Unable to create config file!");
-        $data = "<?php \n\$sdescription = '$sdescription';\n\$sname = '$sname';\n\$server = '$servername';\n\$dbuser = '$dbuser';\n\$dbpass = '$dbpass';\n\$dbname = '$dbname';\n\$version = '1.5';\n\$conn = mysqli_connect(\$server, \$dbuser, \$dbpass, \$dbname);\n\n?>\n <html><head></head></html>";
+        $data = "<?php \n\$sdescription = '$sdescription';\n\$sname = '$sname';\n\$server = '$servername';\n\$dbuser = '$dbuser';\n\$dbpass = '$dbpass';\n\$dbname = '$dbname';\n\$version = '1.5';\n\n\$matomo = 'disabled';\n\$ganalytics = 'disabled'; \$conn = mysqli_connect(\$server, \$dbuser, \$dbpass, \$dbname);\n\n?>";
         fwrite($configfile, $data);
         fclose($configfile);
         $sqlinj = file_get_contents('dbtable.sql');
@@ -96,29 +96,29 @@ if (isset($_POST['submit'])) {
 		<form action="" method="POST" class="login-email">
             <p class="login-text" style="font-size: 2rem; font-weight: 800;">Database Installation</p>
 			<div class="input-group">
-				<input type="text" placeholder="Server" name="servername" value="<?php echo $servername; ?>" required>
+				<input type="text" placeholder="Server" name="servername" required>
 			</div>
 			<div class="input-group">
-				<input type="text" placeholder="Database User" name="dbuser" value="<?php echo $dbuser; ?>" required>
+				<input type="text" placeholder="Database User" name="dbuser" required>
 			</div>
 			<div class="input-group">
-				<input type="password" placeholder="Database Password" name="dbpass" value="<?php echo $_POST['dbpass']; ?>" required>
+				<input type="password" placeholder="Database Password" name="dbpass" required>
             </div>
             <div class="input-group">
-				<input type="text" placeholder="Database Name" name="dbname" value="<?php echo $_POST['dbname']; ?>" required>
+				<input type="text" placeholder="Database Name" name="dbname" required>
 			</div>
             <p class="login-text" style="font-size: 2rem; font-weight: 800;">User Installation and Site Settings</p>
             <div class="input-group">
-				<input type="email" placeholder="Email" name="mail" value="<?php echo $_POST['mail']; ?>" required>
+				<input type="email" placeholder="Email" name="mail" required>
 			</div>
             <div class="input-group">
-				<input type="password" placeholder="Password" name="passwd" value="<?php echo $_POST['passwd']; ?>" required>
+				<input type="password" placeholder="Password" name="passwd" required>
             </div>
             <div class="input-group">
-				<input type="text" placeholder="Site Name" name="sname" value="<?php echo $_POST['sname']; ?>" required>
+				<input type="text" placeholder="Site Name" name="sname" required>
             </div>
             <div class="input-group">
-				<input type="text" placeholder="Site Description" name="description" value="<?php echo $_POST['description']; ?>" required>
+				<input type="text" placeholder="Site Description" name="description" required>
             </div>
 			<div class="input-group">
 				<button name="submit" class="btn">Install</button>
