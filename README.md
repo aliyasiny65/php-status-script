@@ -18,7 +18,7 @@ A PHP based Website Status Script.
 # Roadmap
 - [x] Admin
   - [x] Incident Create & Update
-  - [ ] Incident Delete
+  - [X] Incident Delete
   - [x] View Reports
   - [x] Report Delete
   - [x] Category Edit
