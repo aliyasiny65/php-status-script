@@ -4,107 +4,18 @@ session_start();
 if (!isset($_SESSION['email'])) {
     header("Location: index.php");
 }
-
-$jsoniteminc = file_get_contents("../incidentdata.json");
-
-$objitemsinc = json_decode($jsoniteminc);
-//json ktgori
-$findByIdinc = function($id) use ($objitemsinc) {
-    foreach ($objitemsinc as $kategorifindinc) {
-        if ($kategorifindinc->id == $id) return $kategorifindinc->history;
-     }
-
-    return false;
-};
-
 include_once '../config.php';
-//
-$jsonitem = file_get_contents("../data.json");
-
-$objitems = json_decode($jsonitem);
-
-$findBystatus = function($id) use ($objitems) {
-    foreach ($objitems as $statusfind) {
-        if ($statusfind->id == $id) return $statusfind->status;
-     }
-
-    return false;
-};
-$findById = function($id) use ($objitems) {
-    foreach ($objitems as $kategorifind) {
-        if ($kategorifind->id == $id) return $kategorifind->name;
-}
-
-    return false;
-};
-if (isset($_POST['submit'])) {
-    if($findBystatus("category1") != "Operational") {
-        $ctg = "category1";
-    } else if($findBystatus("category2") != "Operational") {
-        $ctg = "category2";
-    } else if($findBystatus("category3") != "Operational") {
-        $ctg = "category3";
-    }
-
-    $compltdinfo = $_POST['completedinfo'];
-
-    $datao = file_get_contents('../data.json');
-
-    $json_arro = json_decode($datao, true);
-
-    foreach ($json_arro as $keyo => $valueo) {
-        if ($valueo['id'] == $ctg) {
-            $json_arro[$keyo]['status'] = "Operational";
-        }
-    }
-    file_put_contents('../data.json', json_encode($json_arro));
-
-    //
-
-
-    $data = file_get_contents('../incidentdata.json');
-
-    $json_arr = json_decode($data, true);
-
-    foreach ($json_arr as $key => $value) {
-        if ($value['id'] == $_POST['date']) {
-            $json_arr[$key]['completed'] = $compltdinfo;
-            $json_arr[$key]['completeddate'] = date('M d, h:i A', time());
-        }
-    }
-
-    file_put_contents('../incidentdata.json', json_encode($json_arr));
-};
-
-if (isset($_POST['delete'])) {
-    $data = file_get_contents('../incidentdata.json');
-
-    $json_arr = json_decode($data, true);
-
-    foreach ($json_arr as $key => $value) {
-        if ($value['id'] == $_POST['date']) {
-            $json_arr[$key]['history'] = "noinc";
-			$json_arr[$key]['incname'] = "";
-			$json_arr[$key]['progress'] = "";
-            $json_arr[$key]['invst'] = "";
-			$json_arr[$key]['completed'] = "";
-			$json_arr[$key]['completeddate'] = "";
-        }
-    }
-
-    file_put_contents('../incidentdata.json', json_encode($json_arr));
-	echo "Success";
-};
+$logfile = file_get_contents("log.txt");
+$getlogfile = str_replace("\n", "<br /><br />", $logfile);
 ?>
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-	<script src="../assets/customjs.js"></script>
-    <title><?php echo($sname) ?> Admin | Update Incident</title>
+    <title><?php echo($sname) ?> Admin</title>
 	<link rel="icon" type="image/png" href="../favicon.png" />
     <!-- CSS files -->
     <link href="./dist/css/tabler.min.css" rel="stylesheet"/>
@@ -112,7 +23,7 @@ if (isset($_POST['delete'])) {
     <link href="./dist/css/tabler-payments.min.css" rel="stylesheet"/>
     <link href="./dist/css/tabler-vendors.min.css" rel="stylesheet"/>
     <link href="./dist/css/demo.min.css" rel="stylesheet"/>
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 	<script src="../assets/translate.js"></script>
 	<?php
     //MATOMO ANALYTICS
@@ -124,8 +35,8 @@ if (isset($_POST['delete'])) {
           var _paq = window._paq = window._paq || [];
           _paq.push(['trackPageView']);
           _paq.push(['enableLinkTracking']);
-		  _paq.push(['enableHeartBeatTimer']);
 		  _paq.push(['setUserId', '$matomousermail']);
+		  _paq.push(['enableHeartBeatTimer']);
           (function() {
             var u=\"$matomourl\";
             _paq.push(['setTrackerUrl', u+'matomo.php']);
@@ -157,10 +68,11 @@ if (isset($_POST['delete'])) {
 
     };
     ?>
+	<script src="../assets/customjs.js"></script>
   </head>
   <body>
-  <button id="en" class="translate btn">English</button>
-<button id="tr" class="translate btn">Turkish</button>
+    <button id="en" class="translate btn">English</button>
+	<button id="tr" class="translate btn">Turkish</button>
     <div class="wrapper">
       <header class="navbar navbar-expand-md navbar-light d-print-none">
         <div class="container-xl">
@@ -247,7 +159,7 @@ if (isset($_POST['delete'])) {
                     </span>
                   </a>
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                       <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3" /><line x1="12" y1="12" x2="20" y2="7.5" /><line x1="12" y1="12" x2="12" y2="21" /><line x1="12" y1="12" x2="4" y2="7.5" /><line x1="16" y1="5.25" x2="8" y2="9.75" /></svg>
@@ -290,7 +202,7 @@ if (isset($_POST['delete'])) {
                     </a>
                   </div>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item active">
                   <a class="nav-link dropdown-toggle" href="#navbar-layout" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                       <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="4" y="4" width="6" height="5" rx="2" /><rect x="4" y="13" width="6" height="7" rx="2" /><rect x="14" y="4" width="6" height="7" rx="2" /><rect x="14" y="15" width="6" height="5" rx="2" /></svg>
@@ -355,56 +267,29 @@ if (isset($_POST['delete'])) {
               <div class="col">
                 <!-- Page pre-title -->
                 <div class="page-pretitle">
-				<h class="lang" key="incs">Incidents</h>
+				<h class="lang" key="ssettings">Site Settings</h>
                 </div>
                 <h2 class="page-title">
-				<h class="lang" key="updateinc">Update Incident</h>
+				<h class="lang" key="logreader">Log Reader</h>
                 </h2>
               </div>
-            </div>
-    <form action="" method="POST">
-    		<div class="card-body">
-    	        <div class="row">
-    				<div class="col-xl-4">
-    	            	<div class="row">
-    						<div class="col-md-6 col-xl-12">
-                            <div class="mb-3">
-                              <div class="lang form-label" key="inc">Incident</div>
-                              <select class="form-select" id="date" name="date" required>
-                              <option class="lang" key="today" value="<?php echo date('M/d/Y'); ?>">Today</option>
-                              <option disabled>All Days</option>
-                                 <script>
-                                    $(document).ready(function () {
-                                        $.getJSON("../incidentdata.json", 
-                                            function (data) {
-                                            var student = '';
-                                            $.each(data, function (key, value) {
-                                                student += '<option value="'+value.id+'">'+value.id+'</option>';
-                                            });
-                                        
-                                            $('#date').append(student);
-                                        });
-                                    });
-                                </script>
-                              </select>
-                            </div>
-    							<div class="mb-3">
-    	                		<label class="lang form-label" key="compltdinfo">Completed Information</label>
-    	                		<input type="text" class="form-control" placeholder="Completed Information" name="completedinfo">
-    	            		</div>
-    						<div class="input-group">
-    							<button name="submit" class="lang btn" key="update">Update</button>
-    						</div>
-							<br>
-							<div class="input-group">
-    							<button name="delete" class="lang btn" key="delete">Delete</button>
-    						</div>
-    					</div>
-    				</div>
-    			</div>
-    		</div>
-    	</div>
-    	</form>
+<div class="page-body">
+  <div class="container-xl">
+    <div class="row row-cards">
+      <div class="col-12">
+          <div class="table-responsive">
+    		<table class="table table-vcenter card-table">
+                <td>
+                	<p>
+                	<?php echo $getlogfile; ?>    
+                	</p>
+                </td>
+			</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>  
         <footer class="footer footer-transparent d-print-none">
           <div class="container-xl">
             <div class="row text-center align-items-center flex-row-reverse">

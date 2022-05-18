@@ -5,6 +5,14 @@ if (!isset($_SESSION['email'])) {
     header("Location: index.php");
 }
 
+if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+    $ip = $_SERVER['HTTP_CLIENT_IP'];
+} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+} else {
+    $ip = $_SERVER['REMOTE_ADDR'];
+}
+
 include_once '../config.php';
 
 if (isset($_POST['submit'])) {
@@ -20,6 +28,10 @@ if (isset($_POST['submit'])) {
 			echo "<script>alert('The account has been successfully added.')</script>";
 			$email = "";
 			$_POST['password'] = "";
+			$getlogfile = file_get_contents("log.txt");
+			$fp = fopen('log.txt', 'w');
+			fwrite($fp, "User: ".$_SESSION["email"]." Action: Add New Admin Account - Added Account: ".$_POST['email']." | IP Address: $ip | User Agent: ".$_SERVER['HTTP_USER_AGENT']." Date: ".date("M/d/Y H:i:s")."\n".$getlogfile);
+			fclose($fp);
 		} else {
 			echo "<script>alert('Something went wrong. Try again.')</script>";
 		}
@@ -48,6 +60,7 @@ if (isset($_POST['submit'])) {
     <link href="./dist/css/demo.min.css" rel="stylesheet"/>
 	<?php
     //MATOMO ANALYTICS
+	$matomousermail = $_SESSION['email'];
     if($matomo == "enabled") {
       echo("
       <!-- Matomo -->
@@ -55,6 +68,8 @@ if (isset($_POST['submit'])) {
           var _paq = window._paq = window._paq || [];
           _paq.push(['trackPageView']);
           _paq.push(['enableLinkTracking']);
+		  _paq.push(['setUserId', '$matomousermail']);
+		  _paq.push(['enableHeartBeatTimer']);
           (function() {
             var u=\"$matomourl\";
             _paq.push(['setTrackerUrl', u+'matomo.php']);
@@ -108,6 +123,35 @@ if (isset($_POST['submit'])) {
                 </a>
               </div>
             </div>
+			<div class="nav-item dropdown d-none d-md-flex me-3">
+              <a href="#" class="nav-link px-0" data-bs-toggle="dropdown" tabindex="-1" aria-label="Show notifications">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" /><path d="M9 17v1a3 3 0 0 0 6 0v-1" /></svg>
+                <?php
+					$lastreportdate = strtotime($lastreport);
+					$nowdate = strtotime(date("h:i"));
+					$fark = $lastreportdate - $nowdate;
+					$farkdk = floor($fark / (60));
+					if($farkdk > "-6") {
+						echo "<span class=\"badge bg-red\"></span>";
+					} else {
+						//
+					};
+				?>
+              </a>
+              <div class="dropdown-menu dropdown-menu-end dropdown-menu-card">
+                <div class="card">
+                  <div class="card-body">
+                    <?php
+					if($farkdk > "-6") {
+						echo "<a href=\"reports.php\">New Report!</a>";
+					} else {
+						echo "No notifications</a>";
+					};
+					?>
+                  </div>
+                </div>
+              </div>
+            </div>
             <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="Enable dark mode" data-bs-toggle="tooltip" data-bs-placement="bottom">
               <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" /></svg>
             </a>
@@ -159,6 +203,9 @@ if (isset($_POST['submit'])) {
                       <div class="dropdown-menu-column">
                         <a class="dropdown-item" href="./create-incident.php" >
                           Create Incident
+                        </a>
+						<a class="dropdown-item" href="./create-maintenance.php" >
+                          Create Maintenance
                         </a>
                         <a class="dropdown-item" href="./mng-incidents.php" >
                            Manage Incidents
@@ -214,6 +261,15 @@ if (isset($_POST['submit'])) {
                         </a>
 						<a class="dropdown-item" href="./custom-javascript.php" >
                           Custom JS Loader
+                        </a>
+						<a class="dropdown-item" href="./send-mail.php" >
+                          Mail Config
+                        </a>
+						<a class="dropdown-item" href="./logreader.php" >
+                          Log Reader
+                        </a>
+						<a class="dropdown-item" href="./edit-htaccess.php" >
+                          HTACCESS Editor
                         </a>
                       </div>
                     </div>

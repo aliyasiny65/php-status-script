@@ -1,110 +1,129 @@
 <?php 
+include "../config.php";
+include "../mailconfig.php";
 session_start();
-
 if (!isset($_SESSION['email'])) {
     header("Location: index.php");
 }
-
-$jsoniteminc = file_get_contents("../incidentdata.json");
-
-$objitemsinc = json_decode($jsoniteminc);
-//json ktgori
-$findByIdinc = function($id) use ($objitemsinc) {
-    foreach ($objitemsinc as $kategorifindinc) {
-        if ($kategorifindinc->id == $id) return $kategorifindinc->history;
-     }
-
-    return false;
-};
-
-include_once '../config.php';
-//
-$jsonitem = file_get_contents("../data.json");
-
-$objitems = json_decode($jsonitem);
-
-$findBystatus = function($id) use ($objitems) {
-    foreach ($objitems as $statusfind) {
-        if ($statusfind->id == $id) return $statusfind->status;
-     }
-
-    return false;
-};
-$findById = function($id) use ($objitems) {
-    foreach ($objitems as $kategorifind) {
-        if ($kategorifind->id == $id) return $kategorifind->name;
-}
-
-    return false;
-};
 if (isset($_POST['submit'])) {
-    if($findBystatus("category1") != "Operational") {
-        $ctg = "category1";
-    } else if($findBystatus("category2") != "Operational") {
-        $ctg = "category2";
-    } else if($findBystatus("category3") != "Operational") {
-        $ctg = "category3";
-    }
-
-    $compltdinfo = $_POST['completedinfo'];
-
-    $datao = file_get_contents('../data.json');
-
-    $json_arro = json_decode($datao, true);
-
-    foreach ($json_arro as $keyo => $valueo) {
-        if ($valueo['id'] == $ctg) {
-            $json_arro[$keyo]['status'] = "Operational";
+	$newmailsettings = $_POST['newmailsetting'];
+	$smtphostnme = $_POST['smtphost'];
+	$smtport = $_POST['smtpport'];
+	$smtpusername = $_POST['smtpusernme'];
+	$smtppasswd = $_POST['smtppswd'];
+	$smtpencr = $_POST['smtpencr'];
+    $DELETE = "\$mailsendnotification = '$mailsendnotification';";
+    $datao = file("../mailconfig.php");
+    $out = array();
+    foreach($datao as $line) {
+        if(trim($line) != $DELETE) {
+            $out[] = $line;
         }
     }
-    file_put_contents('../data.json', json_encode($json_arro));
-
+    $fp = fopen("../mailconfig.php", "w+");
+    flock($fp, LOCK_EX);
+    foreach($out as $line) {
+        fwrite($fp, $line);
+    }
+    flock($fp, LOCK_UN);
+    fclose($fp);
     //
-
-
-    $data = file_get_contents('../incidentdata.json');
-
-    $json_arr = json_decode($data, true);
-
-    foreach ($json_arr as $key => $value) {
-        if ($value['id'] == $_POST['date']) {
-            $json_arr[$key]['completed'] = $compltdinfo;
-            $json_arr[$key]['completeddate'] = date('M d, h:i A', time());
+    $DELETE2 = "\$smtphostname = '$smtphostname';";
+    $datao = file("../mailconfig.php");
+    $out = array();
+    foreach($datao as $line) {
+        if(trim($line) != $DELETE2) {
+            $out[] = $line;
         }
     }
-
-    file_put_contents('../incidentdata.json', json_encode($json_arr));
-};
-
-if (isset($_POST['delete'])) {
-    $data = file_get_contents('../incidentdata.json');
-
-    $json_arr = json_decode($data, true);
-
-    foreach ($json_arr as $key => $value) {
-        if ($value['id'] == $_POST['date']) {
-            $json_arr[$key]['history'] = "noinc";
-			$json_arr[$key]['incname'] = "";
-			$json_arr[$key]['progress'] = "";
-            $json_arr[$key]['invst'] = "";
-			$json_arr[$key]['completed'] = "";
-			$json_arr[$key]['completeddate'] = "";
+    $fp = fopen("../mailconfig.php", "w+");
+    flock($fp, LOCK_EX);
+    foreach($out as $line) {
+        fwrite($fp, $line);
+    }
+    flock($fp, LOCK_UN);
+    fclose($fp);
+    //
+    $DELETE3 = "\$smtpusernme = '$smtpusernme';";
+    $datao = file("../mailconfig.php");
+    $out = array();
+    foreach($datao as $line) {
+        if(trim($line) != $DELETE3) {
+            $out[] = $line;
         }
     }
+    $fp = fopen("../mailconfig.php", "w+");
+    flock($fp, LOCK_EX);
+    foreach($out as $line) {
+        fwrite($fp, $line);
+    }
+    flock($fp, LOCK_UN);
+    fclose($fp);
+    $DELETEa = "\$smtppswd = '$smtppswd';";
+    $datao = file("../mailconfig.php");
+    $out = array();
+    foreach($datao as $line) {
+        if(trim($line) != $DELETEa) {
+            $out[] = $line;
+        }
+    }
+    $fp = fopen("../mailconfig.php", "w+");
+    flock($fp, LOCK_EX);
+    foreach($out as $line) {
+        fwrite($fp, $line);
+    }
+    flock($fp, LOCK_UN);
+    fclose($fp);
+	$DELETEb = "\$smtpenc = '$smtpenc';";
+    $datab = file("../mailconfig.php");
+    $out = array();
+    foreach($datab as $line) {
+        if(trim($line) != $DELETEb) {
+            $out[] = $line;
+        }
+    }
+    $fp = fopen("../mailconfig.php", "w+");
+    flock($fp, LOCK_EX);
+    foreach($out as $line) {
+        fwrite($fp, $line);
+    }
+    flock($fp, LOCK_UN);
+    fclose($fp);
 
-    file_put_contents('../incidentdata.json', json_encode($json_arr));
-	echo "Success";
+	$DELETEc = "\$smtpport = '$smtpport';";
+    $datac = file("../mailconfig.php");
+    $out = array();
+    foreach($datac as $line) {
+        if(trim($line) != $DELETEc) {
+            $out[] = $line;
+        }
+    }
+    $fp = fopen("../mailconfig.php", "w+");
+    flock($fp, LOCK_EX);
+    foreach($out as $line) {
+        fwrite($fp, $line);
+    }
+    flock($fp, LOCK_UN);
+    fclose($fp);
+
+	//
+	$data="\$mailsendnotification = '$newmailsettings';\n\$smtphostname = '$smtphostnme';\n\$smtpport = '$smtport';\n\$smtpusernme = '$smtpusername';\n\$smtppswd = '$smtppasswd';\n\$smtpenc = '$smtpencr';";
+    $filecontent=file_get_contents('../mailconfig.php');
+    "?>";
+    $pos=strpos($filecontent, '?>');
+    $filecontent=substr($filecontent, 0, $pos)."".$data."\r\n".substr($filecontent, $pos);
+    file_put_contents("../mailconfig.php", $filecontent);
+    header("Refresh:0");
 };
 ?>
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-	<script src="../assets/customjs.js"></script>
-    <title><?php echo($sname) ?> Admin | Update Incident</title>
+    <title><?php echo($sname) ?> Admin</title>
 	<link rel="icon" type="image/png" href="../favicon.png" />
     <!-- CSS files -->
     <link href="./dist/css/tabler.min.css" rel="stylesheet"/>
@@ -112,7 +131,7 @@ if (isset($_POST['delete'])) {
     <link href="./dist/css/tabler-payments.min.css" rel="stylesheet"/>
     <link href="./dist/css/tabler-vendors.min.css" rel="stylesheet"/>
     <link href="./dist/css/demo.min.css" rel="stylesheet"/>
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 	<script src="../assets/translate.js"></script>
 	<?php
     //MATOMO ANALYTICS
@@ -124,8 +143,8 @@ if (isset($_POST['delete'])) {
           var _paq = window._paq = window._paq || [];
           _paq.push(['trackPageView']);
           _paq.push(['enableLinkTracking']);
-		  _paq.push(['enableHeartBeatTimer']);
 		  _paq.push(['setUserId', '$matomousermail']);
+		  _paq.push(['enableHeartBeatTimer']);
           (function() {
             var u=\"$matomourl\";
             _paq.push(['setTrackerUrl', u+'matomo.php']);
@@ -157,6 +176,7 @@ if (isset($_POST['delete'])) {
 
     };
     ?>
+	<script src="../assets/customjs.js"></script>
   </head>
   <body>
   <button id="en" class="translate btn">English</button>
@@ -247,7 +267,7 @@ if (isset($_POST['delete'])) {
                     </span>
                   </a>
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                       <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3" /><line x1="12" y1="12" x2="20" y2="7.5" /><line x1="12" y1="12" x2="12" y2="21" /><line x1="12" y1="12" x2="4" y2="7.5" /><line x1="16" y1="5.25" x2="8" y2="9.75" /></svg>
@@ -290,7 +310,7 @@ if (isset($_POST['delete'])) {
                     </a>
                   </div>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item active">
                   <a class="nav-link dropdown-toggle" href="#navbar-layout" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                       <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="4" y="4" width="6" height="5" rx="2" /><rect x="4" y="13" width="6" height="7" rx="2" /><rect x="14" y="4" width="6" height="7" rx="2" /><rect x="14" y="15" width="6" height="5" rx="2" /></svg>
@@ -355,57 +375,66 @@ if (isset($_POST['delete'])) {
               <div class="col">
                 <!-- Page pre-title -->
                 <div class="page-pretitle">
-				<h class="lang" key="incs">Incidents</h>
+				<h class="lang" key="ssettings">Site Settings</h>
                 </div>
                 <h2 class="page-title">
-				<h class="lang" key="updateinc">Update Incident</h>
+				<h class="lang" key="mailcfg">Mail Config</h>
                 </h2>
               </div>
+            <form class="mb-3" action="" method="POST">
+              <div>
+                <label class="form-check form-check-inline">
+                  <input id="newmailsetting" name="newmailsetting" class="form-check-input" type="radio" value="phpmail" 
+                  <?php
+                  if($mailsendnotification == "phpmail") {
+                      echo "checked";
+                  }
+                  ?>
+                  >
+                  <span class="form-check-label">PHP mail() Function</span>
+                </label>
+                <label class="form-check form-check-inline">
+                  <input id="newmailsetting" name="newmailsetting" class="form-check-input" value="SMTP" type="radio"
+                  <?php
+                  if($mailsendnotification == "SMTP") {
+                      echo "checked";
+                  }
+                  ?>>
+                  <span class="form-check-label">SMTP</span>
+                </label>
+				<label class="form-check form-check-inline">
+                  <input id="newmailsetting" name="newmailsetting" class="form-check-input" value="off" type="radio"
+                  <?php
+                  if($mailsendnotification == "off") {
+                      echo "checked";
+                  }
+                  ?>>
+                  <span class="lang form-check-label" key="disable">Disable</span>
+                </label>
+              </div>
+            <div class="input-group">
+                <input name="smtphost" type="text" class="form-control"  placeholder="SMTP Server Address Example: mail.example.com" value="<?php echo $smtphostname; ?>">
+                <input name="smtpport" type="text" class="form-control"  placeholder="SMTP Port Example: 465" value="<?php echo $smtpport; ?>">
             </div>
-    <form action="" method="POST">
-    		<div class="card-body">
-    	        <div class="row">
-    				<div class="col-xl-4">
-    	            	<div class="row">
-    						<div class="col-md-6 col-xl-12">
-                            <div class="mb-3">
-                              <div class="lang form-label" key="inc">Incident</div>
-                              <select class="form-select" id="date" name="date" required>
-                              <option class="lang" key="today" value="<?php echo date('M/d/Y'); ?>">Today</option>
-                              <option disabled>All Days</option>
-                                 <script>
-                                    $(document).ready(function () {
-                                        $.getJSON("../incidentdata.json", 
-                                            function (data) {
-                                            var student = '';
-                                            $.each(data, function (key, value) {
-                                                student += '<option value="'+value.id+'">'+value.id+'</option>';
-                                            });
-                                        
-                                            $('#date').append(student);
-                                        });
-                                    });
-                                </script>
-                              </select>
-                            </div>
-    							<div class="mb-3">
-    	                		<label class="lang form-label" key="compltdinfo">Completed Information</label>
-    	                		<input type="text" class="form-control" placeholder="Completed Information" name="completedinfo">
-    	            		</div>
-    						<div class="input-group">
-    							<button name="submit" class="lang btn" key="update">Update</button>
-    						</div>
-							<br>
-							<div class="input-group">
-    							<button name="delete" class="lang btn" key="delete">Delete</button>
-    						</div>
-    					</div>
-    				</div>
-    			</div>
-    		</div>
-    	</div>
-    	</form>
-        <footer class="footer footer-transparent d-print-none">
+            <div></div><h4></h4>
+            <div class="input-group">
+                <input name="smtpusernme" type="text" class="form-control"  placeholder="SMTP Username" value="<?php echo $smtpusernme; ?>">
+                <input name="smtppswd" type="password" class="form-control"  placeholder="SMTP Password" value="<?php echo $smtppswd; ?>">
+            </div>
+            <div></div><h4></h4>
+            <div class="lang form-label" key="smtpencrypt">SMTP Encryption:</div>
+            <div class="input-group">
+                <select class="form-select" name="smtpencr">
+                    <option value="ssl" <?php if($smtpenc == "ssl") echo "selected"; ?>>SSL</option>
+                    <option value="tls" <?php if($smtpenc == "tls") echo "selected"; ?>>TLS</option>
+                    <option class="lang" key="noencrpyt" value="" <?php if($smtpenc == "") echo "selected"; ?>>No encryption</option>
+                </select>
+            </div>
+            <div></div><h4></h4>
+                <button name="submit" class="lang btn btn-primary" key="savechngs">Save Changes</button>
+            </form>
+
+<footer class="footer footer-transparent d-print-none">
           <div class="container-xl">
             <div class="row text-center align-items-center flex-row-reverse">
               <div class="col-lg-auto ms-lg-auto">

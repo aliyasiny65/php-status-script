@@ -22,8 +22,11 @@ include_once '../config.php';
     <link href="./dist/css/tabler-payments.min.css" rel="stylesheet"/>
     <link href="./dist/css/tabler-vendors.min.css" rel="stylesheet"/>
     <link href="./dist/css/demo.min.css" rel="stylesheet"/>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="../assets/translate.js"></script>
 	<?php
     //MATOMO ANALYTICS
+	$matomousermail = $_SESSION['email'];
     if($matomo == "enabled") {
       echo("
       <!-- Matomo -->
@@ -31,6 +34,8 @@ include_once '../config.php';
           var _paq = window._paq = window._paq || [];
           _paq.push(['trackPageView']);
           _paq.push(['enableLinkTracking']);
+		  _paq.push(['setUserId', '$matomousermail']);
+		  _paq.push(['enableHeartBeatTimer']);
           (function() {
             var u=\"$matomourl\";
             _paq.push(['setTrackerUrl', u+'matomo.php']);
@@ -65,6 +70,8 @@ include_once '../config.php';
 	<script src="../assets/customjs.js"></script>
   </head>
   <body>
+  <button id="en" class="translate btn">English</button>
+<button id="tr" class="translate btn">Turkish</button>
     <div class="wrapper">
       <header class="navbar navbar-expand-md navbar-light d-print-none">
         <div class="container-xl">
@@ -81,8 +88,37 @@ include_once '../config.php';
               <div class="btn-list">
                 <a href="https://github.com/aliyasiny65" class="btn" target="_blank" rel="noreferrer">
                   <svg xmlns="http://www.w3.org/2000/svg" class="icon text-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
-                  Source code
+                  <h class="lang" key="srcode">Source code</h>
                 </a>
+              </div>
+            </div>
+			<div class="nav-item dropdown d-none d-md-flex me-3">
+              <a href="#" class="nav-link px-0" data-bs-toggle="dropdown" tabindex="-1" aria-label="Show notifications">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" /><path d="M9 17v1a3 3 0 0 0 6 0v-1" /></svg>
+                <?php
+					$lastreportdate = strtotime($lastreport);
+					$nowdate = strtotime(date("h:i"));
+					$fark = $lastreportdate - $nowdate;
+					$farkdk = floor($fark / (60));
+					if($farkdk > "-6") {
+						echo "<span class=\"badge bg-red\"></span>";
+					} else {
+						//
+					};
+				?>
+              </a>
+              <div class="dropdown-menu dropdown-menu-end dropdown-menu-card">
+                <div class="card">
+                  <div class="card-body">
+                    <?php
+					if($farkdk > "-6") {
+						echo "<a href=\"reports.php\" class=\"lang\" key=\"newreport\">New Report!</a>";
+					} else {
+						echo "<h class=\"lang\" key=\"nonotif\"></h></a>";
+					};
+					?>
+                  </div>
+                </div>
               </div>
             </div>
             <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="Enable dark mode" data-bs-toggle="tooltip" data-bs-placement="bottom">
@@ -95,13 +131,13 @@ include_once '../config.php';
               <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
                 <div class="d-none d-xl-block ps-2">
                   <div><?php echo($_SESSION['email']) ?></div>
-                  <div class="mt-1 small text-muted">System Administrator</div>
+                  <div class="mt-1 small text-muted"><h class="lang" key="sysadmin">System Administrator</h></div>
                 </div>
               </a>
               <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                <a href="account.php" class="dropdown-item">Profile & account</a>
+                <a href="account.php" class="dropdown-item"><h class="lang" key="profacc">Profile & Account</h></a>
                 <div class="dropdown-divider"></div>
-                <a href="logout.php" class="dropdown-item">Logout</a>
+                <a href="logout.php" class="dropdown-item"><h class="lang" key="logout">Logout</h></a>
               </div>
             </div>
           </div>
@@ -118,7 +154,7 @@ include_once '../config.php';
                       <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="5 12 3 12 12 3 21 12 19 12" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></svg>
                     </span>
                     <span class="nav-link-title">
-                      Home
+					<h class="lang" key="home">Home</h>
                     </span>
                   </a>
                 </li>
@@ -128,20 +164,23 @@ include_once '../config.php';
                       <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3" /><line x1="12" y1="12" x2="20" y2="7.5" /><line x1="12" y1="12" x2="12" y2="21" /><line x1="12" y1="12" x2="4" y2="7.5" /><line x1="16" y1="5.25" x2="8" y2="9.75" /></svg>
                     </span>
                     <span class="nav-link-title">
-                      Incidents
+					<h class="lang" key="incs">Incidents</h>
                     </span>
                   </a>
                   <div class="dropdown-menu">
                     <div class="dropdown-menu-columns">
                       <div class="dropdown-menu-column">
                         <a class="dropdown-item" href="./create-incident.php" >
-                          Create Incident
+						<h class="lang" key="crinc">Create Incident</h>
+                        </a>
+						<a class="dropdown-item" href="./create-maintenance.php" >
+						<h class="lang" key="crmtnc">Create Maintenance</h>
                         </a>
                         <a class="dropdown-item" href="./mng-incidents.php" >
-                           Manage Incidents
+						<h class="lang" key="mngincs">Manage Incidents</h>
                         </a>
                         <a class="dropdown-item" href="./reports.php" >
-                          View Reports
+						<h class="lang" key="vreport">View Reports</h>
                         </a>
                       </div>
                     </div>
@@ -153,12 +192,12 @@ include_once '../config.php';
                       <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></svg>
                     </span>
                     <span class="nav-link-title">
-                      Category
+					<h class="lang" key="ctgs">Category</h>
                     </span>
                   </a>
                   <div class="dropdown-menu">
                     <a class="dropdown-item" href="./edit-category.php" >
-                      Category Edit
+					<h class="lang" key="ctgedit">Category Edit</h>
                     </a>
                   </div>
                 </li>
@@ -168,29 +207,38 @@ include_once '../config.php';
                       <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="4" y="4" width="6" height="5" rx="2" /><rect x="4" y="13" width="6" height="7" rx="2" /><rect x="14" y="4" width="6" height="7" rx="2" /><rect x="14" y="15" width="6" height="5" rx="2" /></svg>
                     </span>
                     <span class="nav-link-title">
-                      Site Settings
+						<h class="lang" key="ssettings">Site Settings</h>
                     </span>
                   </a>
                   <div class="dropdown-menu">
                     <div class="dropdown-menu-columns">
                       <div class="dropdown-menu-column">
                         <a class="dropdown-item" href="./edit-site.php" >
-                          Edit Site Details
+						<h class="lang" key="editsite">Edit Site Details</h>
                         </a>
                         <a class="dropdown-item" href="./updater.php" >
-                          Updater
+						<h class="lang" key="updater">Updater</h>
                         </a>
                         <a class="dropdown-item" href="./account.php" >
-                          Account
+						<h class="lang" key="account">Account</h>
                         </a>
                         <a class="dropdown-item" href="./edit-config.php" >
-                          Configure Database
+						<h class="lang" key="cfgdb">Configure Database</h>
                         </a>
 						<a class="dropdown-item" href="./edit-analytics.php" >
-                          Analytics
+						<h class="lang" key="analytics">Analytics</h>
                         </a>
 						<a class="dropdown-item" href="./custom-javascript.php" >
-                          Custom JS Loader
+						<h class="lang" key="customjsloader">Custom JS Loader</h>
+                        </a>
+						<a class="dropdown-item" href="./send-mail.php" >
+						<h class="lang" key="mailcfg">Mail Config</h>
+                        </a>
+						<a class="dropdown-item" href="./logreader.php" >
+						<h class="lang" key="logreader">Log Reader</h>
+                        </a>
+						<a class="dropdown-item" href="./edit-htaccess.php" >
+						<h class="lang" key="htaccesseditor">HTACCESS Editor</h>
                         </a>
                       </div>
                     </div>
@@ -202,7 +250,7 @@ include_once '../config.php';
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rotate" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M19.95 11a8 8 0 1 0 -.5 4m.5 5v-5h-5"></path></svg>
                     </span>
                     <span class="nav-link-title">
-                      Updater
+					<h class="lang" key="updater">Updater</h>
                     </span>
                   </a>
                 </li>
@@ -218,10 +266,10 @@ include_once '../config.php';
               <div class="col">
                 <!-- Page pre-title -->
                 <div class="page-pretitle">
-                  Docs
+				<h class="lang" key="docs">Docs</h>
                 </div>
                 <h2 class="page-title">
-                  Configure
+				<h class="lang" key="configure">Configure</h>
                 </h2>
               </div>
             </div>
@@ -234,8 +282,8 @@ include_once '../config.php';
               <div class="col-lg-10 col-xl-9">
                 <div class="card card-lg">
                   <div class="card-body markdown">
-                    <h1 id="whos-that-then">Configure Database</h1>
-                    <p>Hello! You can edit the config.php file to configure the database.</p>
+                    <h1 id="whos-that-then" class="lang" key="cfgdb">Configure Database</h1>
+                    <p class="lang" key="configuredbdesc">Hello! You can edit the config.php file to configure the database.</p>
                     <div class="language-scss highlighter-rouge">
                       <div class="highlight">
                         <pre class="highlight">
