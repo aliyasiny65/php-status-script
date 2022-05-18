@@ -1,0 +1,9 @@
+# PLEASE DO NOT REMOVE FOR YOUR SAFETY | If you remove it, the audit log will become public.
+<Files log.txt>
+Order allow,deny
+Deny from all
+</Files>
+<Files htaccess.txt>
+Order allow,deny
+Deny from all
+</Files>

@@ -70,6 +70,7 @@ $findByinccompltddate = function($id) use ($objitemsinc) {
 
 
 if($format == "json") {
+    header('Content-Type: application/json'); 
     if($data == "info") {
         $arr = array (
             array(
@@ -93,6 +94,29 @@ if($format == "json") {
     } else if($data == "status") {
         $formatjsonstatus = file_get_contents("data.json");
         echo $formatjsonstatus;
+    } else if($data == "date") {
+    $getdate = $_GET["date"];
+    if($getdate == "") {
+        header("HTTP/1.1 400 Bad Request");
+        echo "400 Bad Request"; 
+    } else {
+       $getdateincstatusjson = $findByIdinc($getdate);
+       $findincnamedatajson = $findByincnme("$getdate");
+       $findincinvstdatajson = $findByincinvst("$getdate");
+       $findincprgrsdescjson = $findByincprgrs("$getdate");
+       $findinccompltddescjson = $findByinccompltd("$getdate");
+       $findcompltddateincjson = $findByinccompltddate("$getdate");
+       $arr1 = array (
+               "day" => "$getdate",
+               "incstatus" => $getdateincstatusjson,
+               "incname" => $findincnamedatajson,
+               "incinvestigatedate" => $findincinvstdatajson,
+               "incprogressdescription" => $findincprgrsdescjson,
+               "inccompleteddescription" => $findinccompltddescjson,
+               "inccompleteddate" => $findcompltddateincjson
+       );
+       echo json_encode($arr1);
+    };
     } else {
         header("HTTP/1.1 400 Bad Request");
         echo "400 Bad Request";

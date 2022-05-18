@@ -1,4 +1,5 @@
 <?php
+
 include "config.php";
 
 if (!file_exists("config.php")) {
@@ -90,7 +91,7 @@ if($controldun == "") {
 			 'progress'     =>     "",
 			 'invst'     =>     "",
 			 'completed'     =>     "",
-             'completeddate'     =>     ""
+        'completeddate'     =>     ""
 
 		);
 		$array_data[] = $extra;
@@ -107,6 +108,24 @@ if(file_exists('incidentdata.json'))
 }
 }
 
+
+$jsonitemlink = file_get_contents("links.json");
+$objitemslink = json_decode($jsonitemlink);
+$findlinkstatus = function($id) use ($objitemslink) {
+    foreach ($objitemslink as $findlinks) {
+        if ($findlinks->id == $id) return $findlinks->status;
+     }
+
+    return false;
+};
+
+$findlink = function($id) use ($objitemslink) {
+  foreach ($objitemslink as $findlinks) {
+      if ($findlinks->id == $id) return $findlinks->link;
+   }
+
+  return false;
+};
 ?>
 
 <!DOCTYPE html>
@@ -332,9 +351,28 @@ if(file_exists('incidentdata.json'))
           </div>
         </div>
         <div class="container">
-          <div
-            class="flex items-center p-5 mt-8 md:mt-24 status font-semibold text-dark-green"
-          >
+          <?php
+          $ctg1nme = $findById('category1');
+          $ctg2nme = $findById('category2');
+          $ctg3nme = $findById('category3');
+          $sts1 = $findBystatus('category1');
+          $sts2 = $findBystatus('category2');
+          $sts3 = $findBystatus('category3');
+
+          if($sts1 == "Operational" && $sts2 == "Operational" && $sts3 == "Operational") {
+            echo "<div
+              class=\"flex items-center p-5 mt-8 md:mt-24 status font-semibold text-dark-green\"
+            >";
+          } else if($sts1 == "Not Operational" || $sts2 == "Not Operational" || $sts3 == "Not Operational") {
+            echo "<div
+              class=\"flex items-center p-5 mt-8 md:mt-24 status font-semibold text-dark-green\" style=\"background: linear-gradient(90.19deg, #ef3038 0%, #ef3038 100%);\"
+            >";
+          } else if($sts1 == "Maintenance" || $sts2 == "Maintenance" || $sts3 == "Maintenance") {
+            echo "<div
+              class=\"flex items-center p-5 mt-8 md:mt-24 status font-semibold text-dark-green\" style=\"background: linear-gradient(90.19deg, #3c94eb 0%, #3c94eb 100%);\"
+            >";
+          }
+          ?>
             <svg
               class="mr-4"
               width="29"
@@ -347,21 +385,17 @@ if(file_exists('incidentdata.json'))
               />
             </svg>
              <?php
-            $ctg1nme = $findById('category1');
-            $ctg2nme = $findById('category2');
-            $ctg3nme = $findById('category3');
-            $sts1 = $findBystatus('category1');
-            $sts2 = $findBystatus('category2');
-            $sts3 = $findBystatus('category3');
-            if($sts1 != "Operational") {
+            if($sts1 == "Not Operational") {
               echo("$ctg1nme" . "&nbsp;" . "<ul><li class=\"lang\" key=\"ctgnotoperational\">is Not Operational</li></ul>");
-            } else if($sts2 != "Operational") {
+            } else if($sts2 == "Not Operational") {
               echo("$ctg2nme" . "&nbsp;" . "<ul><li class=\"lang\" key=\"ctgnotoperational\">is Not Operational</li></ul>");
-            } else if($sts3 != "Operational") {
+            } else if($sts3 == "Not Operational") {
               echo("$ctg3nme" . "&nbsp;" . "<ul><li class=\"lang\" key=\"ctgnotoperational\">is Not Operational</li></ul>");
-            } else {
+            } else if($sts1 == "Maintenance" || $sts2 == "Maintenance" || $sts3 == "Maintenance") {
+              echo("<h3 class=\"lang text-2xl\" key=\"maintenance\">Maintenance</h3>");
+            } else if($sts1 == "Operational" || $sts2 == "Operational" || $sts3 == "Operational") {
               echo("<ul><li class=\"lang\" key=\"alloperational\">All Systems Operational</li></ul>");
-            };
+            }
             ?>
           </div>
         </div>
@@ -539,7 +573,7 @@ if(file_exists('incidentdata.json'))
                         $completedif
                         <div class=\"text-gray-500\">$buguncompltdate</div>
                         <p class=\"mt-3\">
-                          <strong class=\"text-gray-900 dark:text-gray-300\">Investigating</strong> - We are investigating an issue that is impacting in connecting. We will provide more details within the next times.
+                        <strong class=\"lang text-gray-900 dark:text-gray-300\" key=\"investigating\">Investigating</strong> <h class=\"lang\" key=\"investigatingdesc\">- We are investigating an issue that is impacting in connecting. We will provide more details within the next times.</h>
                           <div class=\"text-gray-500\">$buguninvst</div>
                         </p>
                         ");
@@ -554,7 +588,7 @@ if(file_exists('incidentdata.json'))
                         <strong class=\"text-gray-900 dark:text-gray-300\">In progress</strong> - $bugunprgrs
                         </p>
                         <p class=\"mt-3\">
-                        <strong class=\"text-gray-900 dark:text-gray-300\">Investigating</strong> - We are investigating an issue that is impacting in connecting. We will provide more details within the next times.
+                          <strong class=\"lang text-gray-900 dark:text-gray-300\" key=\"investigating\">Investigating</strong> <h class=\"lang\" key=\"investigatingdesc\">- We are investigating an issue that is impacting in connecting. We will provide more details within the next times.</h>
                         <div class=\"text-gray-500\">$buguninvst</div>
                         </p>
                         ");
@@ -598,7 +632,7 @@ if(file_exists('incidentdata.json'))
                          $duncompletedif
                          <div class=\"text-gray-500\">$duncompltdate</div>
                          <p class=\"mt-3\">
-                           <strong class=\"text-gray-900 dark:text-gray-300\">Investigating</strong> - We are investigating an issue that is impacting in connecting. We will provide more details within the next times.
+                         <strong class=\"lang text-gray-900 dark:text-gray-300\" key=\"investigating\">Investigating</strong> <h class=\"lang\" key=\"investigatingdesc\">- We are investigating an issue that is impacting in connecting. We will provide more details within the next times.</h>
                            <div class=\"text-gray-500\">$duninvst</div>
                          </p>
                          ");
@@ -613,7 +647,7 @@ if(file_exists('incidentdata.json'))
                          <strong class=\"text-gray-900 dark:text-gray-300\">In progress</strong> - $dunprgrs
                          </p>
                          <p class=\"mt-3\">
-                         <strong class=\"text-gray-900 dark:text-gray-300\">Investigating</strong> - We are investigating an issue that is impacting in connecting. We will provide more details within the next times.
+                         <strong class=\"lang text-gray-900 dark:text-gray-300\" key=\"investigating\">Investigating</strong> <h class=\"lang\" key=\"investigatingdesc\">- We are investigating an issue that is impacting in connecting. We will provide more details within the next times.</h>
                          <div class=\"text-gray-500\">$duninvst</div>
                          </p>
                          ");
@@ -656,7 +690,7 @@ if(file_exists('incidentdata.json'))
                          $ikiguncompletedif
                          <div class=\"text-gray-500\">$ikiguncompltdate</div>
                          <p class=\"mt-3\">
-                           <strong class=\"text-gray-900 dark:text-gray-300\">Investigating</strong> - We are investigating an issue that is impacting in connecting. We will provide more details within the next times.
+                         <strong class=\"lang text-gray-900 dark:text-gray-300\" key=\"investigating\">Investigating</strong> <h class=\"lang\" key=\"investigatingdesc\">- We are investigating an issue that is impacting in connecting. We will provide more details within the next times.</h>
                            <div class=\"text-gray-500\">$ikiguninvst</div>
                          </p>
                          ");
@@ -671,7 +705,7 @@ if(file_exists('incidentdata.json'))
                          <strong class=\"text-gray-900 dark:text-gray-300\">In progress</strong> - $ikigunprgrs
                          </p>
                          <p class=\"mt-3\">
-                         <strong class=\"text-gray-900 dark:text-gray-300\">Investigating</strong> - We are investigating an issue that is impacting in connecting. We will provide more details within the next times.
+                         <strong class=\"lang text-gray-900 dark:text-gray-300\" key=\"investigating\">Investigating</strong> <h class=\"lang\" key=\"investigatingdesc\">- We are investigating an issue that is impacting in connecting. We will provide more details within the next times.</h>
                          <div class=\"text-gray-500\">$ikiguninvst</div>
                          </p>
                          ");
@@ -714,7 +748,7 @@ if(file_exists('incidentdata.json'))
                          $ucguncompletedif
                          <div class=\"text-gray-500\">$ucguncompltdate</div>
                          <p class=\"mt-3\">
-                           <strong class=\"text-gray-900 dark:text-gray-300\">Investigating</strong> - We are investigating an issue that is impacting in connecting. We will provide more details within the next times.
+                         <strong class=\"lang text-gray-900 dark:text-gray-300\" key=\"investigating\">Investigating</strong> <h class=\"lang\" key=\"investigatingdesc\">- We are investigating an issue that is impacting in connecting. We will provide more details within the next times.</h>
                            <div class=\"text-gray-500\">$ucguninvst</div>
                          </p>
                          ");
@@ -729,7 +763,7 @@ if(file_exists('incidentdata.json'))
                          <strong class=\"text-gray-900 dark:text-gray-300\">In progress</strong> - $ucgunprgrs
                          </p>
                          <p class=\"mt-3\">
-                         <strong class=\"text-gray-900 dark:text-gray-300\">Investigating</strong> - We are investigating an issue that is impacting in connecting. We will provide more details within the next times.
+                         <strong class=\"lang text-gray-900 dark:text-gray-300\" key=\"investigating\">Investigating</strong> <h class=\"lang\" key=\"investigatingdesc\">- We are investigating an issue that is impacting in connecting. We will provide more details within the next times.</h>
                          <div class=\"text-gray-500\">$ucguninvst</div>
                          </p>
                          ");
@@ -747,8 +781,58 @@ if(file_exists('incidentdata.json'))
         <div class="container flex justify-between">
           <div>
             Powered by
-            <a href="https://github.com/aliyasiny65/php-status-script"><span class="font semibold">Crypon Status</span></a>
+            <strong><a href="https://github.com/aliyasiny65/php-status-script"><span class="font semibold">Crypon Status</span></a></strong>
           </div>
+      <div class="flex">
+        <?php
+        if($findlinkstatus("github") == "enabled") {
+          $getgithublink = $findlink("github");
+          echo "<a href=\"$getgithublink\" >
+	        <svg xmlns=\"http://www.w3.org/2000/svg\" class=\"icon\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" stroke-width=\"2\" stroke=\"currentColor\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5\" /></svg>
+        </a>";
+        }
+        ?>
+        <?php
+        if($findlinkstatus("facebook") == "enabled") {
+          $getfblink = $findlink("facebook");
+          echo "<a href=\"$getfblink\" >
+	        <svg xmlns=\"http://www.w3.org/2000/svg\" class=\"icon\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" stroke-width=\"2\" stroke=\"currentColor\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3\" /></svg>
+        </a>";
+        }
+        ?>
+        <?php
+        if($findlinkstatus("twitter") == "enabled") {
+          $gettwlink = $findlink("twitter");
+          echo "<a href=\"./$gettwlink\" >
+	        <svg xmlns=\"http://www.w3.org/2000/svg\" class=\"icon\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" stroke-width=\"2\" stroke=\"currentColor\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z\" /></svg>
+        </a>";
+        }
+        ?>
+        <?php
+        if($findlinkstatus("instagram") == "enabled") {
+          $getiglink = $findlink("instagram");
+          echo "<a href=\"$getiglink\" >
+	        <svg xmlns=\"http://www.w3.org/2000/svg\" class=\"icon\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" stroke-width=\"2\" stroke=\"currentColor\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><rect x=\"4\" y=\"4\" width=\"16\" height=\"16\" rx=\"4\" /><circle cx=\"12\" cy=\"12\" r=\"3\" /><line x1=\"16.5\" y1=\"7.5\" x2=\"16.5\" y2=\"7.501\" /></svg>
+        </a>";
+        }
+        ?>
+        <?php
+        if($findlinkstatus("youtube") == "enabled") {
+          $getytlink = $findlink("youtube");
+          echo "<a href=\"$getytlink\" >
+	        <svg xmlns=\"http://www.w3.org/2000/svg\" class=\"icon\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" stroke-width=\"2\" stroke=\"currentColor\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><rect x=\"3\" y=\"5\" width=\"18\" height=\"14\" rx=\"4\" /><path d=\"M10 9l5 3l-5 3z\" /></svg>
+        </a>";
+        }
+        ?>
+        <?php
+        if($findlinkstatus("website") == "enabled") {
+          $getwslink = $findlink("website");
+          echo "<a href=\"$getwslink\" >
+	        <svg xmlns=\"http://www.w3.org/2000/svg\" class=\"icon\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" stroke-width=\"2\" stroke=\"currentColor\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><circle cx=\"12\" cy=\"12\" r=\"9\" /><path d=\"M9 3.6c5 6 7 10.5 7.5 16.2\" /><path d=\"M6.4 19c3.5 -3.5 6 -6.5 14.5 -6.4\" /><path d=\"M3.1 10.75c5 0 9.814 -.38 15.314 -5\" /></svg>
+        </a>";
+        }
+        ?>
+        </div>
         </div>
       </footer>
     </div>

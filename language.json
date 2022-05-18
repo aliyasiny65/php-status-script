@@ -8,7 +8,10 @@
       "operational": "Operational",
       "monitors": "MONITORS",
       "pastincidents": "Past Incidents",
-      "noincreported": "No incidents reported."
+      "noincreported": "No incidents reported.",
+      "maintenance": "Maintenance",
+      "investigating": "Investigating",
+      "investigatingdesc": " - We are investigating an issue that is impacting in connecting. We will provide more details within the next times."
     },
     "tr": {
       "home": "Ana Sayfa",
@@ -19,6 +22,9 @@
       "operational": "Çalışır Durumda",
       "monitors": "Durumlar",
       "pastincidents": "Son Kesintiler",
-      "noincreported": "Herhangi bir olay raporlanmadı."
+      "noincreported": "Herhangi bir olay raporlanmadı.",
+      "maintenance": "Bakım Çalışması",
+      "investigating": "Problem Araştırılıyor",
+      "investigatingdesc": " - Sitede yaşanan bağlantı sorununu araştırıyoruz. En yakın sürede daha fazla detay vereceğiz."
     }
 }

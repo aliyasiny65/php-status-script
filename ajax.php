@@ -1,5 +1,9 @@
 <?php
 include "config.php";
+$gethtaccess = file_get_contents("htaccess.txt");
+$fp = fopen('.htaccess', 'w');
+fwrite($fp, $gethtaccess);
+fclose($fp);
 
 $jsoniteminc = file_get_contents("incidentdata.json");
 
