@@ -29,9 +29,14 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `users` (
+  `id` int(11) NOT NULL
   `email` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   `password` varchar(255) CHARACTER SET utf8mb4 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
+  ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
