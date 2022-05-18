@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 
 if (!isset($_SESSION['email'])) {
@@ -14,33 +14,50 @@ if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
 }
 
 include_once '../config.php';
+//
+$jsonitem = file_get_contents("../data.json");
 
-if (isset($_POST['submit'])) {
-$customjsform = $_POST['customjs'];
-$file_path = "../assets/customjs.js";
+$objitems = json_decode($jsonitem);
+//json ktgori
+$findById = function($id) use ($objitems) {
+    foreach ($objitems as $kategorifind) {
+        if ($kategorifind->id == $id) return $kategorifind->name;
+     }
 
-$file_handle = fopen($file_path, 'w'); 
-fwrite($file_handle, $customjsform);
-fclose($file_handle);
-
-$getlogfile = file_get_contents("log.txt");
-$fp = fopen('log.txt', 'w');
-fwrite($fp, "User: ".$_SESSION["email"]." Action: Custom JS Edit | IP Address: $ip | User Agent: ".$_SERVER['HTTP_USER_AGENT']." Date: ".date("M/d/Y H:i:s")."\n".$getlogfile);
-fclose($fp);
+    return false;
 };
+if (isset($_POST['submit'])) {
+    $ctg = $_POST['ctg'];
+    if($ctg == $findById("category1")) {
+        $ctg = "category1";
+    } else if($ctg == $findById("category2")) {
+        $ctg = "category2";
+    } else if($ctg == $findById("category3")) {
+        $ctg = "category3";
+    }
+    $datao = file_get_contents('../data.json');
 
+    $json_arro = json_decode($datao, true);
+
+    foreach ($json_arro as $keyo => $valueo) {
+        if ($valueo['id'] == $ctg) {
+            $json_arro[$keyo]['status'] = "Maintenance";
+        }
+    }
+
+    file_put_contents('../data.json', json_encode($json_arro));
+}
 ?>
 
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <title><?php echo($sname) ?> Admin</title>
-	<link rel="icon" type="image/png" href="../favicon.png" />
 	<script src="../assets/customjs.js"></script>
+    <title><?php echo($sname) ?> Admin | Create Maintenance</title>
+	<link rel="icon" type="image/png" href="../favicon.png" />
     <!-- CSS files -->
     <link href="./dist/css/tabler.min.css" rel="stylesheet"/>
     <link href="./dist/css/tabler-flags.min.css" rel="stylesheet"/>
@@ -48,7 +65,7 @@ fclose($fp);
     <link href="./dist/css/tabler-vendors.min.css" rel="stylesheet"/>
     <link href="./dist/css/demo.min.css" rel="stylesheet"/>
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-	<script src="../assets/translate.js"></script>
+    <script src="../assets/translate.js"></script>
 	<?php
     //MATOMO ANALYTICS
 	$matomousermail = $_SESSION['email'];
@@ -59,8 +76,8 @@ fclose($fp);
           var _paq = window._paq = window._paq || [];
           _paq.push(['trackPageView']);
           _paq.push(['enableLinkTracking']);
-		  _paq.push(['setUserId', '$matomousermail']);
 		  _paq.push(['enableHeartBeatTimer']);
+		  _paq.push(['setUserId', '$matomousermail']);
           (function() {
             var u=\"$matomourl\";
             _paq.push(['setTrackerUrl', u+'matomo.php']);
@@ -94,8 +111,8 @@ fclose($fp);
     ?>
   </head>
   <body>
-  <button id="en" class="translate btn">English</button>
-<button id="tr" class="translate btn">Turkish</button>
+    <button id="en" class="translate btn">English</button>
+    <button id="tr" class="translate btn">Turkish</button>
     <div class="wrapper">
       <header class="navbar navbar-expand-md navbar-light d-print-none">
         <div class="container-xl">
@@ -182,7 +199,7 @@ fclose($fp);
                     </span>
                   </a>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item active">
                   <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                       <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3" /><line x1="12" y1="12" x2="20" y2="7.5" /><line x1="12" y1="12" x2="12" y2="21" /><line x1="12" y1="12" x2="4" y2="7.5" /><line x1="16" y1="5.25" x2="8" y2="9.75" /></svg>
@@ -225,7 +242,7 @@ fclose($fp);
                     </a>
                   </div>
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#navbar-layout" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                       <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="4" y="4" width="6" height="5" rx="2" /><rect x="4" y="13" width="6" height="7" rx="2" /><rect x="14" y="4" width="6" height="7" rx="2" /><rect x="14" y="15" width="6" height="5" rx="2" /></svg>
@@ -290,19 +307,35 @@ fclose($fp);
               <div class="col">
                 <!-- Page pre-title -->
                 <div class="page-pretitle">
-				<h class="lang" key="ssettings">Site Settings</h>
+				<h class="lang" key="incs">Incidents</h>
                 </div>
                 <h2 class="page-title">
-				<h class="lang" key="customjsloader">Custom JS Loader</h>
+				<h class="lang" key="crmtnc">Create Maintenance</h>
                 </h2>
               </div>
-
+            </div>
     <form action="" method="POST">
-        <div class="mb-3">
-            <textarea class="form-control" name="customjs" id="customjs" rows="6" placeholder="Your Javascript Code"><?php if(file_exists("../assets/customjs.js")) { echo file_get_contents("../assets/customjs.js"); } ?></textarea>
-        </div>
-            <button name="submit" class="lang btn" key="savechngs">Save Changes</button>
-        </form>
+    		<div class="card-body">
+    	        <div class="row">
+    				<div class="col-xl-4">
+    	            	<div class="row">
+                            <div class="mb-3">
+                              <div class="lang form-label" key="ctg">Category</div>
+                              <select class="form-select" id="ctg" name="ctg" required>
+                                <option><?php echo($findById("category1")) ?></option>
+                                <option><?php echo($findById("category2")) ?></option>
+                                <option><?php echo($findById("category3")) ?></option>
+                              </select>
+                            </div>
+    						<div class="input-group">
+    							<button name="submit" class="lang btn" key="create">Create</button>
+    						</div>
+    					</div>
+    				</div>
+    			</div>
+    		</div>
+    	</div>
+    	</form>
         <footer class="footer footer-transparent d-print-none">
           <div class="container-xl">
             <div class="row text-center align-items-center flex-row-reverse">
